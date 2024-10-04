@@ -28,7 +28,7 @@ Route::post('/reset-password', [NewPasswordController::class, 'store'])
 //    ->middleware(['auth', 'signed', 'throttle:6,1'])
 //    ->name('verification.verify');
 
-Route::get('/verify-email/{user}/{hash}', [VerifyEmailController::class, 'manual']);
+Route::get('/verify-email/{user}/{hash}', [VerifyEmailController::class, 'manual'])->name('verification.verify');
 
 Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
     ->middleware(['auth', 'throttle:6,1'])
