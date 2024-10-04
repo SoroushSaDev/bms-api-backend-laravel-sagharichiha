@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('registers', function (Blueprint $table) {
             $table->id();
-            $table->id('device_id');
+            $table->uuid('device_id');
             $table->string('title');
             $table->string('unit')->nullable();
             $table->softDeletes();

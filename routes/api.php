@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\DeviceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -23,5 +24,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [CityController::class, 'store'])->name('store');
         Route::patch('/{city}', [CityController::class, 'update'])->name('update');
         Route::delete('/{city}', [CityController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('/devices')->name('devices.')->group(function () {
+        Route::get('/', [DeviceController::class, 'index'])->name('index');
+        Route::get('/{device}', [DeviceController::class, 'show'])->name('show');
+        Route::post('/', [DeviceController::class, 'store'])->name('store');
+        Route::patch('/{device}', [DeviceController::class, 'update'])->name('update');
+        Route::delete('/{device}', [DeviceController::class, 'destroy'])->name('destroy');
     });
 });

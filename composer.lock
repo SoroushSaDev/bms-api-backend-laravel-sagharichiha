@@ -7438,16 +7438,16 @@
         },
         {
             "name": "railsware/mailtrap-php",
-            "version": "2.0.1",
+            "version": "2.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/railsware/mailtrap-php.git",
-                "reference": "d040739330fef1fbcd8c819d4b45583bedc8b628"
+                "reference": "8983df5f77b1143d2b7594e965b90547d9237bc9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/railsware/mailtrap-php/zipball/d040739330fef1fbcd8c819d4b45583bedc8b628",
-                "reference": "d040739330fef1fbcd8c819d4b45583bedc8b628",
+                "url": "https://api.github.com/repos/railsware/mailtrap-php/zipball/8983df5f77b1143d2b7594e965b90547d9237bc9",
+                "reference": "8983df5f77b1143d2b7594e965b90547d9237bc9",
                 "shasum": ""
             },
             "require": {
@@ -7506,9 +7506,9 @@
             ],
             "support": {
                 "issues": "https://github.com/railsware/mailtrap-php/issues",
-                "source": "https://github.com/railsware/mailtrap-php/tree/2.0.1"
+                "source": "https://github.com/railsware/mailtrap-php/tree/2.0.2"
             },
-            "time": "2024-08-15T14:34:24+00:00"
+            "time": "2024-10-03T11:34:32+00:00"
         },
         {
             "name": "sebastian/cli-parser",
