@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\ProjectController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -32,5 +33,13 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/', [DeviceController::class, 'store'])->name('store');
         Route::patch('/{device}', [DeviceController::class, 'update'])->name('update');
         Route::delete('/{device}', [DeviceController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('/projects')->name('projects.')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('index');
+        Route::get('/{project}', [ProjectController::class, 'show'])->name('show');
+        Route::post('/', [ProjectController::class, 'store'])->name('store');
+        Route::patch('/{project}', [ProjectController::class, 'update'])->name('update');
+        Route::delete('/{project}', [ProjectController::class, 'destroy'])->name('destroy');
     });
 });
