@@ -18,6 +18,7 @@ return new class extends Migration {
             $table->enum('gender', ['male', 'female'])->nullable();
             $table->date('birthday')->nullable();
             $table->text('address')->nullable();
+            $table->string('language')->default('en');
             $table->softDeletes();
             $table->timestamps();
         });

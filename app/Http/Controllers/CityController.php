@@ -37,6 +37,7 @@ class CityController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $city,
+                'message' => __('city.created'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -70,6 +71,7 @@ class CityController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $city,
+                'message' => __('city.updated'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -88,6 +90,7 @@ class CityController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
+                'message' => __('city.deleted'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();

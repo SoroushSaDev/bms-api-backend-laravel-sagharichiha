@@ -15,6 +15,11 @@ return new class extends Migration {
             $table->integer('user_id')->nullable();
             $table->string('name');
             $table->string('type')->nullable();
+            $table->string('brand')->nullable();
+            $table->string('model')->nullable();
+            $table->text('description')->nullable();
+            $table->string('lan')->nullable();
+            $table->string('wifi')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

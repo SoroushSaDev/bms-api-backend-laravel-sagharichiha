@@ -24,11 +24,19 @@ class ProjectController extends Controller
         DB::beginTransaction();
         try {
             $project = new Project();
+            $project->name = $request['name'];
+            $project->type = $request->has('type') ? $request['type'] : null;
+            $project->brand = $request->has('brand') ? $request['brand'] : null;
+            $project->model = $request->has('model') ? $request['model'] : null;
+            $project->description = $request->has('description') ? $request['description'] : null;
+            $project->lan = $request->has('lan') ? $request['lan'] : null;
+            $project->wifi = $request->has('wifi') ? $request['wifi'] : null;
             $project->save();
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'data' => $project,
+                'message' => __('project.created'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -51,13 +59,19 @@ class ProjectController extends Controller
     {
         DB::beginTransaction();
         try {
-            $project->name = $request->get('name');
-            $project->type = $request->has('type') ? $request->get('type') : null;
+            $project->name = $request['name'];
+            $project->type = $request->has('type') ? $request['type'] : $project->type;
+            $project->brand = $request->has('brand') ? $request['brand'] : $project->brand;
+            $project->model = $request->has('model') ? $request['model'] : $project->model;
+            $project->description = $request->has('description') ? $request['description'] : $project->description;
+            $project->lan = $request->has('lan') ? $request['lan'] : $project->lan;
+            $project->wifi = $request->has('type') ? $request['wifi'] : $project->wifi;
             $project->save();
             DB::commit();
             return response()->json([
                 'status' => 'success',
                 'data' => $project,
+                'message' => __('project.updated'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -76,6 +90,7 @@ class ProjectController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
+                'message' => __('project.deleted'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();

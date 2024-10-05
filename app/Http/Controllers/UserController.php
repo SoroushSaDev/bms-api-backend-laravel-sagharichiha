@@ -58,6 +58,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $user,
+                'message' => __('user.created'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -114,6 +115,7 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $user,
+                'message' => __('user.updated'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -133,7 +135,7 @@ class UserController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'User has been deleted successfully',
+                'message' => __('user.deleted'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();

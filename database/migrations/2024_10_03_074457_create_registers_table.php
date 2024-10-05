@@ -14,8 +14,14 @@ return new class extends Migration {
             $table->id();
             $table->integer('user_id')->nullable();
             $table->uuid('device_id');
+            $table->integer('parent_id')->default(0);
             $table->string('title');
+            $table->string('value')->nullable();
             $table->string('unit')->nullable();
+            $table->string('type')->nullable();
+            $table->string('scale')->nullable();
+            $table->enum('input', ['digital', 'analog']);
+            $table->enum('output', ['digital', 'analog']);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -36,6 +36,7 @@ class DeviceController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $device,
+                'message' => __('device.created'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -69,6 +70,7 @@ class DeviceController extends Controller
             return response()->json([
                 'status' => 'success',
                 'data' => $device,
+                'message' => __('device.updated'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -85,6 +87,10 @@ class DeviceController extends Controller
         try {
             $device->delete();
             DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => __('device.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',

@@ -2,24 +2,29 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Project extends Model
+class VerifyCode extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $guarded = [];
 
-    const Languages = [
-        'en' => 'English',
-        'fa' => 'Farsi',
-    ];
-
     public function User(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
+    public static function InvokeCodes($userId, $type): void
+    {
+        $codes = VerifyCode::where('user_id', $userId)->where('type', $type)->whereNull('invoked_at')->get();
+        foreach ($codes as $code) {
+            $code->invoked_at = Carbon::now();
+            $code->save();
+        }
     }
 }

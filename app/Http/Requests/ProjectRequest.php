@@ -25,6 +25,11 @@ class ProjectRequest extends FormRequest
         return [
             'name' => 'required',
             'type' => 'nullable',
+            'brand' => 'nullable',
+            'model' => 'nullable',
+            'description' => 'nullable',
+            'lan' => 'nullable',
+            'wifi' => 'nullable',
         ];
     }
 }

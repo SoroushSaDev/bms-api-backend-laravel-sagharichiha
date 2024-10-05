@@ -5,6 +5,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifyCodeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
@@ -20,7 +21,7 @@ Route::post('/login', [AuthenticatedSessionController::class, 'store']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
-    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store']);
+    Route::post('/email/verify', [EmailVerificationNotificationController::class, 'store']);
 
     Route::prefix('/cities')->name('cities.')->group(function () {
         Route::get('/', [CityController::class, 'index'])->name('index');
@@ -52,5 +53,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{user}', [UserController::class, 'show'])->name('show');
         Route::patch('/{user}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user}', [UserController::class, 'destroy'])->name('destroy');
+    });
+
+    Route::prefix('/verify')->name('verify.')->group(function () {
+        Route::post('/send', [VerifyCodeController::class, 'send'])->name('send');
+        Route::post('/check', [VerifyCodeController::class, 'check'])->name('check');
     });
 });
