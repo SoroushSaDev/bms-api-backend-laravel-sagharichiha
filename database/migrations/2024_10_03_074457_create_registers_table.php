@@ -20,8 +20,8 @@ return new class extends Migration {
             $table->string('unit')->nullable();
             $table->string('type')->nullable();
             $table->string('scale')->nullable();
-            $table->enum('input', ['digital', 'analog']);
-            $table->enum('output', ['digital', 'analog']);
+            $table->enum('input', ['digital', 'analog', 'none'])->default('none');
+            $table->enum('output', ['digital', 'analog', 'none'])->default('none');
             $table->softDeletes();
             $table->timestamps();
         });

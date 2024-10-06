@@ -4,8 +4,28 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class City extends Model
 {
-    use HasFactory;
+    use HasFactory, SoftDeletes;
+
+    protected $guarded = [];
+
+    public static function boot(): void
+    {
+        parent::boot();
+        static::creating(function (City $city) {
+            $city->user_id = auth()->check() ? auth()->id() : null;
+        });
+        static::updating(function (City $city) {
+            $city->user_id = auth()->check() ? auth()->id() : null;
+        });
+    }
+
+    public function Country(): BelongsTo
+    {
+        return $this->belongsTo(Country::class, 'country_id', 'id');
+    }
 }

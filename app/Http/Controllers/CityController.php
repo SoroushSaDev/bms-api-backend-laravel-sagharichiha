@@ -23,10 +23,6 @@ class CityController extends Controller
 
     public function store(CityRequest $request): JsonResponse
     {
-        $request->validate([
-            'country_id' => 'required',
-            'name' => 'required',
-        ]);
         DB::beginTransaction();
         try {
             $city = new City();
@@ -58,10 +54,6 @@ class CityController extends Controller
 
     public function update(City $city, CityRequest $request): JsonResponse
     {
-        $request->validate([
-            'country_id' => 'required',
-            'name' => 'required',
-        ]);
         DB::beginTransaction();
         try {
             $city->country_id = $request->get('country_id');

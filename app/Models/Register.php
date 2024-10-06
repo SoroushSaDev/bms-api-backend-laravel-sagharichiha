@@ -12,6 +12,17 @@ class Register extends Model
 
     protected $guarded = [];
 
+    public static function boot(): void
+    {
+        parent::boot();
+        static::creating(function (Register $register) {
+            $register->user_id = auth()->check() ? auth()->id() : null;
+        });
+        static::updating(function (Register $register) {
+            $register->user_id = auth()->check() ? auth()->id() : null;
+        });
+    }
+
     const Types = [
         'binary',
         'integer',

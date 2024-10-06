@@ -2,12 +2,14 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Register;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\Rule;
 
-class ProjectRequest extends FormRequest
+class RegisterRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,11 +27,12 @@ class ProjectRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'city' => 'required|exists:cities,id',
-            'description' => 'nullable',
-            'address' => 'nullable',
-            'devices.*' => 'nullable|exists:devices,id',
+            'device_id' => 'required|exists:devices,id',
+            'title' => 'string|required',
+            'unit' => 'string|nullable',
+            'type' => ['nullable', Rule::in(Register::Types)],
+            'input' => 'nullable|in:digital,analog',
+            'output' => 'nullable|in:digital,analog',
         ];
     }
 

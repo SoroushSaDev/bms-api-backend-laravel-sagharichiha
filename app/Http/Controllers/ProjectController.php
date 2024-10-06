@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProjectRequest;
+use App\Models\Device;
 use App\Models\Project;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -25,13 +26,25 @@ class ProjectController extends Controller
         try {
             $project = new Project();
             $project->name = $request['name'];
-            $project->type = $request->has('type') ? $request['type'] : null;
-            $project->brand = $request->has('brand') ? $request['brand'] : null;
-            $project->model = $request->has('model') ? $request['model'] : null;
+            $project->city_id = $request['city'];
+            $project->address = $request->has('address') ? $request['address'] : null;
             $project->description = $request->has('description') ? $request['description'] : null;
-            $project->lan = $request->has('lan') ? $request['lan'] : null;
-            $project->wifi = $request->has('wifi') ? $request['wifi'] : null;
             $project->save();
+            if ($request->has('devices')) {
+                foreach ($request['devices'] as $deviceId) {
+                    $device = Device::find($deviceId);
+                    $newDevice = $device->replicate();
+                    $newDevice->project_id = $project->id;
+                    $newDevice->parent_id = $device->id;
+                    $newDevice->save();
+                    foreach ($device->Registers as $register) {
+                        $newRegister = $register->replicate();
+                        $newRegister->parent_id = $register->id;
+                        $newRegister->device_id = $newDevice->id;
+                        $newRegister->save();
+                    }
+                }
+            }
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -60,13 +73,28 @@ class ProjectController extends Controller
         DB::beginTransaction();
         try {
             $project->name = $request['name'];
-            $project->type = $request->has('type') ? $request['type'] : $project->type;
-            $project->brand = $request->has('brand') ? $request['brand'] : $project->brand;
-            $project->model = $request->has('model') ? $request['model'] : $project->model;
+            $project->city_id = $request['city'];
+            $project->address = $request->has('address') ? $request['address'] : $project->address;
             $project->description = $request->has('description') ? $request['description'] : $project->description;
-            $project->lan = $request->has('lan') ? $request['lan'] : $project->lan;
-            $project->wifi = $request->has('type') ? $request['wifi'] : $project->wifi;
             $project->save();
+            if ($request->has('devices')) {
+                $devices = $project->Devices->pluck('id');
+                foreach ($request['devices'] as $deviceId) {
+                    if (!in_array($deviceId, $devices)) {
+                        $device = Device::find($deviceId);
+                        $newDevice = $device->replicate();
+                        $newDevice->project_id = $project->id;
+                        $newDevice->parent_id = $device->id;
+                        $newDevice->save();
+                        foreach ($device->Registers as $register) {
+                            $newRegister = $register->replicate();
+                            $newRegister->parent_id = $register->id;
+                            $newRegister->device_id = $newDevice->id;
+                            $newRegister->save();
+                        }
+                    }
+                }
+            }
             DB::commit();
             return response()->json([
                 'status' => 'success',

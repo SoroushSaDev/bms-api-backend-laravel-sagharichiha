@@ -11,7 +11,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::create('devices', function (Blueprint $table) {
-            $table->uuid('id')->primary();
+            $table->id();
             $table->integer('user_id')->nullable();
             $table->string('name');
             $table->string('type')->nullable();
@@ -20,6 +20,8 @@ return new class extends Migration {
             $table->text('description')->nullable();
             $table->string('lan')->nullable();
             $table->string('wifi')->nullable();
+            $table->integer('parent_id')->default(0);
+            $table->integer('project_id')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });

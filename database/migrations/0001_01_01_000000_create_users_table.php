@@ -19,6 +19,7 @@ return new class extends Migration {
             $table->string('phone_number')->unique()->nullable();
             $table->timestamp('phone_number_verified_at')->nullable();
             $table->string('password');
+            $table->enum('type', ['admin', 'agent', 'user'])->default('user');
             $table->rememberToken();
             $table->softDeletes();
             $table->timestamps();

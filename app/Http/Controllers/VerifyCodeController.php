@@ -24,7 +24,7 @@ class VerifyCodeController extends Controller
         DB::beginTransaction();
         try {
             $user = auth()->user();
-            if (!is_null($user->{$type} . 'verified_at'))
+            if (!is_null($user->{$type . '_verified_at'}))
                 return response()->json([
                     'status' => 'error',
                     'message' => __('verification.' . $type . '.verified'),
@@ -42,7 +42,7 @@ class VerifyCodeController extends Controller
                 Mail::to($user->email)->send(new VerifyEmail($code->code));
             return response()->json([
                 'status' => 'success',
-                'message' => __('verification' . $type . '.sent'),
+                'message' => __('verification.' . $type . '.sent'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();

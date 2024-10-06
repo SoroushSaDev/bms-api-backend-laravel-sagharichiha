@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterRequest;
 use App\Models\Register;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -20,19 +21,15 @@ class RegisterController extends Controller
         ], 200);
     }
 
-    public function store(Request $request): JsonResponse
+    public function store(RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'device_id' => 'required',
-            'title' => 'string|required',
-            'unit' => 'string|nullable',
-        ]);
         DB::beginTransaction();
         try {
             $register = new Register();
             $register->device_id = $request['device_id'];
             $register->title = $request['title'];
             $register->unit = $request->has('unit') ? $request['unit'] : null;
+            $register->type = $request->has('type') ? $request['type'] : null;
             $register->save();
             DB::commit();
             return response()->json([
@@ -57,18 +54,15 @@ class RegisterController extends Controller
         ], 200);
     }
 
-    public function update(Register $register, Request $request): JsonResponse
+    public function update(Register $register, RegisterRequest $request): JsonResponse
     {
-        $request->validate([
-            'device_id' => 'required',
-            'title' => 'string|required',
-            'unit' => 'string|nullable',
-        ]);
         DB::beginTransaction();
         try {
             $register->device_id = $request['device_id'];
             $register->title = $request['title'];
-            $register->unit = $request->has('unit') ? $request['unit'] : null;
+            $register->unit = $request->has('unit') ? $request['unit'] : $register->unit;
+            $register->type = $request->has('type') ? $request['type'] : $register->type;
+            $register->save();
             DB::commit();
             return response()->json([
                 'status' => 'success',

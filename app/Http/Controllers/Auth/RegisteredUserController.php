@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App;
 use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Auth\Events\Registered;
@@ -29,16 +30,21 @@ class RegisteredUserController extends Controller
 
         Profile::create([
             'user_id' => $user->id,
+            'lang' => $request->has('lang') ? $request['lang'] : 'en',
         ]);
 
         event(new Registered($user));
 
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $lang = $user->Profile->language;
+        App::setLocale($lang);
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user
+            'user' => $user,
+            'lang' => $lang,
         ]);
     }
 }

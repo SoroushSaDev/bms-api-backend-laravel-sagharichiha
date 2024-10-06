@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -22,11 +23,15 @@ class AuthenticatedSessionController extends Controller
         $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
 
+        $lang = $user->Profile->language;
+        App::setLocale($lang);
+
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
             'user' => $user,
             'status' => 'Login successful',
+            'lang' => $lang,
         ]);
     }
 
