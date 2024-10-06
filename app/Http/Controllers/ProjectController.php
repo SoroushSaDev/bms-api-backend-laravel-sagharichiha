@@ -62,6 +62,8 @@ class ProjectController extends Controller
 
     public function show(Project $project): JsonResponse
     {
+        $project->city = $project->City;
+        $project->devices = $project->Devices;
         return response()->json([
             'status' => 'success',
             'data' => $project,

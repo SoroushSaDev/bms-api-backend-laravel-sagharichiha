@@ -46,6 +46,9 @@ class CityController extends Controller
 
     public function show(City $city): JsonResponse
     {
+        $city->name = translate($city->name);
+        $city->country = $city->Country;
+        $city->country->name = translate($city->country->en_name);
         return response()->json([
             'status' => 'success',
             'data' => $city,

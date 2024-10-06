@@ -25,7 +25,7 @@ class UserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $parentId = $request->has('parent_id') ? $request['parent_id'] : (request()->user()?->id ?? 0);
+        $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         $request->validate([
             'name' => 'required|max:255',
             'password' => 'required|confirmed|min:6|max:32',
@@ -41,18 +41,18 @@ class UserController extends Controller
         try {
             $user = new User();
             $user->parent_id = $parentId;
-            $user->name = request('name');
-            $user->email = request('email') ?? null;
-            $user->password = Hash::make(request('password'));
-            $user->phone_number = request('phone_number') ?? null;
+            $user->name = $request['name'];
+            $user->email = $request->has('email') ? $request['email'] : null;
+            $user->password = Hash::make($request['password']);
+            $user->phone_number = $request->has('phone_number') ? $request['phone_number'] : null;
             $user->save();
             $profile = new Profile();
             $profile->user_id = $user->id;
-            $profile->first_name = request('first_name') ?? null;
-            $profile->last_name = request('last_name') ?? null;
-            $profile->gender = request('gender') ?? null;
-            $profile->birthday = request('birthday') ?? null;
-            $profile->address = request('address') ?? null;
+            $profile->first_name = $request->has('first_name') ? $request['first_name'] : null;
+            $profile->last_name = $request->has('last_name') ? $request['last_name'] : null;
+            $profile->gender = $request->has('gender') ? $request['gender'] : null;
+            $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
+            $profile->address = $request->has('address') ? $request['address'] : null;
             $profile->save();
             DB::commit();
             return response()->json([
@@ -92,24 +92,24 @@ class UserController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $user->name = request('name');
+            $user->name = $request['name'];
             if ($request->has('password'))
-                $user->password = Hash::make(request('password'));
+                $user->password = Hash::make($request['password']);
             if ($request->has('phone_number') && $request['phone_number'] != $user->phone_number) {
-                $user->phone_number = request('phone_number');
+                $user->phone_number = $request['phone_number'];
                 $user->phone_number_verified_at = null;
             }
             if ($request->has('email') && $request['email'] != $user->email) {
-                $user->email = request('email');
+                $user->email = $request['email'];
                 $user->email_verified_at = null;
             }
             $user->save();
             $profile = $user->Profile;
-            $profile->first_name = request('first_name') ?? $profile->first_name;
-            $profile->last_name = request('last_name') ?? $profile->last_name;
-            $profile->gender = request('gender') ?? $profile->gender;
-            $profile->birthday = request('birthday') ?? $profile->birthday;
-            $profile->address = request('address') ?? $profile->address;
+            $profile->first_name = $request->has('first_name') ? $request['first_name'] : $profile->first_name;
+            $profile->last_name = $request->has('last_name') ? $request['last_name'] : $profile->last_name;
+            $profile->gender = $request->has('gender') ? $request['gender'] : $profile->gender;
+            $profile->birthday = $request->has('birthday') ? $request['birthday'] : $profile->birthday;
+            $profile->address = $request->has('address') ? $request['address'] : $profile->address;
             $profile->save();
             DB::commit();
             return response()->json([

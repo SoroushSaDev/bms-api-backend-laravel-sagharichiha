@@ -35,6 +35,11 @@ class Project extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function City(): BelongsTo
+    {
+        return $this->belongsTo(City::class, 'city_id', 'id');
+    }
+
     public function Devices(): HasMany
     {
         return $this->hasMany(Device::class, 'project_id', 'id');

@@ -16,7 +16,7 @@ return new class extends Migration
             $table->integer('user_id')->nullable();
             $table->string('key');
             $table->string('lang');
-            $table->string('translation')->nullable();
+            $table->string('value')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

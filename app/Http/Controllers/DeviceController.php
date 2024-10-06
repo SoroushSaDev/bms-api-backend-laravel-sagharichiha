@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceRequest;
 use App\Models\Device;
-use App\Models\Register;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -52,6 +51,7 @@ class DeviceController extends Controller
 
     public function show(Device $device): JsonResponse
     {
+        $device->registers = $device->Registers;
         return response()->json([
             'status' => 'success',
             'data' => $device,
