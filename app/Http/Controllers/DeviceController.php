@@ -12,9 +12,16 @@ class DeviceController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $devices = Device::when($request->has('type'), function ($query) use ($request) {
-            $query->where('type', request('type'));
-        })->paginate(10);
+        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'type', 'brand', 'model', 'description'])
+            ->when(auth()->user()->type != 'admin', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->when($request->has('type'), function ($query) use ($request) {
+                $query->where('type', $request['type']);
+            })->paginate(10);
+        $devices->map(function ($device) {
+            $device->Translate();
+        });
         return response()->json([
             'status' => 'success',
             'data' => $devices,
@@ -35,6 +42,7 @@ class DeviceController extends Controller
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
             $device->save();
             DB::commit();
+            $device->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $device,
@@ -51,7 +59,7 @@ class DeviceController extends Controller
 
     public function show(Device $device): JsonResponse
     {
-        $device->registers = $device->Registers;
+        $device->Translate();
         return response()->json([
             'status' => 'success',
             'data' => $device,
@@ -71,6 +79,7 @@ class DeviceController extends Controller
             $device->wifi = $request->has('type') ? $request['wifi'] : $device->wifi;
             $device->save();
             DB::commit();
+            $device->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $device,

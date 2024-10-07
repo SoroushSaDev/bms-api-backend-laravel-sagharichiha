@@ -28,4 +28,10 @@ class City extends Model
     {
         return $this->belongsTo(Country::class, 'country_id', 'id');
     }
+
+    public function Translate(): void
+    {
+        $this->name = translate($this->name);
+        $this->Country->name = translate($this->Country->en_name);
+    }
 }

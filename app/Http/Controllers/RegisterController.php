@@ -14,7 +14,12 @@ class RegisterController extends Controller
     {
         $registers = Register::when($request->has('device_id'), function ($query) use ($request) {
             $query->where('device_id', $request['device_id']);
+        })->when(auth()->user()->type != 'admin', function ($query) {
+            $query->where('user_id', auth()->id());
         })->paginate(10);
+        $registers->map(function ($register) {
+            $register->Translate();
+        });
         return response()->json([
             'status' => 'success',
             'data' => $registers,
@@ -32,6 +37,7 @@ class RegisterController extends Controller
             $register->type = $request->has('type') ? $request['type'] : null;
             $register->save();
             DB::commit();
+            $register->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $register,
@@ -48,6 +54,7 @@ class RegisterController extends Controller
 
     public function show(Register $register): JsonResponse
     {
+        $register->Translate();
         return response()->json([
             'status' => 'success',
             'data' => $register,
@@ -64,6 +71,7 @@ class RegisterController extends Controller
             $register->type = $request->has('type') ? $request['type'] : $register->type;
             $register->save();
             DB::commit();
+            $register->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $register,

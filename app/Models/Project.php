@@ -44,4 +44,13 @@ class Project extends Model
     {
         return $this->hasMany(Device::class, 'project_id', 'id');
     }
+
+    public function Translate(): void
+    {
+        TranslateAll($this, ['name', 'description', 'address']);
+        $this->City->name = translate($this->City->name);
+        $this->Devices->map(function ($device) {
+            $device->Translate();
+        });
+    }
 }

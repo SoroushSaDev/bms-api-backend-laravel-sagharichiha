@@ -4,6 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Register extends Model
@@ -31,4 +33,24 @@ class Register extends Model
         'float',
         'long',
     ];
+
+    public function Device(): BelongsTo
+    {
+        return $this->belongsTo(Device::class, 'device_id', 'id');
+    }
+
+    public function Parent(): BelongsTo
+    {
+        return $this->belongsTo(Register::class, 'parent_id', 'id');
+    }
+
+    public function Children(): HasMany
+    {
+        return $this->hasMany(Register::class, 'parent_id', 'id');
+    }
+
+    public function Translate(): void
+    {
+        TranslateAll($this, ['unit', 'input', 'output']);
+    }
 }

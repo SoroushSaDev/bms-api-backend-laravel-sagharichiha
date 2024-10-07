@@ -11,9 +11,18 @@ use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
-    public function index(): JsonResponse
+    public function index(Request $request): JsonResponse
     {
-        $projects = Project::paginate(10);
+        $projects = Project::with(['User', 'City', 'Devices'])->select(['id', 'user_id', 'city_id', 'name', 'description', 'address'])
+            ->when(auth()->user()->type != 'admin', function ($query) {
+                $query->where('user_id', auth()->id());
+            })
+            ->when($request->has('city'), function ($query) use ($request) {
+                $query->where('city_id', $request['city']);
+            })->paginate(10);
+        $projects->map(function (Project $project) {
+            $project->Translate();
+        });
         return response()->json([
             'status' => 'success',
             'data' => $projects,
@@ -46,6 +55,7 @@ class ProjectController extends Controller
                 }
             }
             DB::commit();
+            $project->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $project,
@@ -62,8 +72,7 @@ class ProjectController extends Controller
 
     public function show(Project $project): JsonResponse
     {
-        $project->city = $project->City;
-        $project->devices = $project->Devices;
+        $project->Translate();
         return response()->json([
             'status' => 'success',
             'data' => $project,
@@ -98,6 +107,7 @@ class ProjectController extends Controller
                 }
             }
             DB::commit();
+            $project->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $project,

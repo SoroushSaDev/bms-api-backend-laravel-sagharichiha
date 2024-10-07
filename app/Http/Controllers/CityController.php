@@ -12,9 +12,12 @@ class CityController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $cities = City::when($request->has('country_id'), function ($query) use ($request) {
+        $cities = City::with('Country')->select(['id', 'name', 'country_id'])->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
         })->paginate(10);
+        $cities->map(function (City $city) {
+            $city->Translate();
+        });
         return response()->json([
             'status' => 'success',
             'data' => $cities,
@@ -26,10 +29,11 @@ class CityController extends Controller
         DB::beginTransaction();
         try {
             $city = new City();
-            $city->country_id = $request->get('country_id');
-            $city->name = $request->get('name');
+            $city->country_id = $request['country'];
+            $city->name = $request['name'];
             $city->save();
             DB::commit();
+            $city->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $city,
@@ -46,9 +50,7 @@ class CityController extends Controller
 
     public function show(City $city): JsonResponse
     {
-        $city->name = translate($city->name);
-        $city->country = $city->Country;
-        $city->country->name = translate($city->country->en_name);
+        $city->Translate();
         return response()->json([
             'status' => 'success',
             'data' => $city,
@@ -59,10 +61,11 @@ class CityController extends Controller
     {
         DB::beginTransaction();
         try {
-            $city->country_id = $request->get('country_id');
-            $city->name = $request->get('name');
+            $city->country_id = $request['country'];
+            $city->name = $request['name'];
             $city->save();
             DB::commit();
+            $city->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $city,

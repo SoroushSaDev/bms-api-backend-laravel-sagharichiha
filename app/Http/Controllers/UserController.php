@@ -14,7 +14,7 @@ class UserController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $users = User::when($request->has('parent_id'), function ($query) use ($request) {
+        $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
             $query->where('parent_id', $request->get('parent_id'));
         })->paginate(10);
         return response()->json([
