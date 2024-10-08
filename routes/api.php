@@ -50,6 +50,12 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/{user:id}', [UserController::class, 'show'])->name('show');
         Route::patch('/{user:id}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('destroy');
+        Route::get('/translations', [UserController::class, 'translations'])->name('translations');
+        Route::post('/translations/{translation:id}/translate', [UserController::class, 'translate'])->name('translate');
+        Route::middleware(AdminMiddleware::class)->group(function () {
+            Route::get('/{user:id}/roles', [UserController::class, 'roles'])->name('roles');
+            Route::post('/{user:id}/set', [UserController::class, 'set'])->name('set');
+        });
     });
     Route::prefix('/verify')->name('verify.')->group(function () {
         Route::post('/send', [VerifyCodeController::class, 'send'])->name('send');
@@ -64,11 +70,11 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::middleware(AdminMiddleware::class)->group(function () {
         Route::prefix('/permissions')->name('permissions.')->group(function () {
-            Route::get('/', [PermissionController::class::class, 'index'])->name('index');
-            Route::post('/', [PermissionController::class::class, 'store'])->name('store');
-            Route::get('/{permission:id}', [PermissionController::class::class, 'show'])->name('show');
-            Route::patch('/{permission:id}', [PermissionController::class::class, 'update'])->name('update');
-            Route::delete('/{permission:id}', [PermissionController::class::class, 'destroy'])->name('destroy');
+            Route::get('/', [PermissionController::class, 'index'])->name('index');
+            Route::post('/', [PermissionController::class, 'store'])->name('store');
+            Route::get('/{permission:id}', [PermissionController::class, 'show'])->name('show');
+            Route::patch('/{permission:id}', [PermissionController::class, 'update'])->name('update');
+            Route::delete('/{permission:id}', [PermissionController::class, 'destroy'])->name('destroy');
         });
         Route::prefix('/roles')->name('roles.')->group(function () {
             Route::get('/', [RoleController::class, 'index'])->name('index');

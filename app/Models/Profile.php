@@ -17,4 +17,15 @@ class Profile extends Model
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
+
+    public function GetLang(): string
+    {
+        return Translation::Languages[$this->language];
+    }
+
+    public function Translate(): void
+    {
+        $this->language = translate($this->GetLang());
+        TranslateAll($this, ['first_name', 'last_name', 'address']);
+    }
 }

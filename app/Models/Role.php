@@ -22,4 +22,11 @@ class Role extends Model
     {
         return $this->belongsToMany(User::class, 'role_user');
     }
+
+    public function Translate(): void
+    {
+        foreach ($this->Permissions as $permission) {
+            $permission->name = translate($permission->name);
+        }
+    }
 }

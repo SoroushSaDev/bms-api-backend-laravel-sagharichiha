@@ -19,14 +19,17 @@ class RoleController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:permissions,name',
-        ]);
         DB::beginTransaction();
         try {
+            $request->validate([
+                'name' => 'required|unique:permissions,name',
+                'permissions.*' => 'nullable|exists:permissions,id',
+            ]);
             $role = Role::create([
                 'name' => $request['name'],
             ]);
+            if ($request->has('permissions'))
+                $role->Permissions()->sync($request['permissions']);
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -42,16 +45,27 @@ class RoleController extends Controller
         }
     }
 
+    public function show(Role $role)
+    {
+        $role->Translate();
+        return response()->json([
+            'status' => 'success',
+            'data' => $role,
+        ], 200);
+    }
+
     public function update(Role $role, Request $request)
     {
         $request->validate([
             'name' => ['required', ($request['name'] != $role['name'] ? 'unique:permissions,name' : '')],
+            'permissions.*' => 'nullable|exists:permissions,id',
         ]);
         DB::beginTransaction();
         try {
             $role->update([
                 'name' => $request['name'],
             ]);
+            $role->Permissions()->sync($request['permissions']);
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -71,6 +85,7 @@ class RoleController extends Controller
     {
         DB::beginTransaction();
         try {
+            $role->Permissions()->sync([]);
             $role->delete();
             DB::commit();
             return response()->json([

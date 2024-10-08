@@ -2,7 +2,7 @@
 
 use App\Models\Translation;
 
-function translate(string $key, $lang = null)
+function translate($key, $lang = null)
 {
     if ($key != null) {
         $lang = $lang == null ? (auth()->check() ? (auth()->user()->Profile?->language ?? 'en') : 'en') : $lang;

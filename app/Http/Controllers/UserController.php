@@ -3,11 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\Translation;
 use App\Models\User;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
 class UserController extends Controller
@@ -15,7 +18,7 @@ class UserController extends Controller
     public function index(Request $request): JsonResponse
     {
         $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
-            $query->where('parent_id', $request->get('parent_id'));
+            $query->where('parent_id', $request['parent_id']);
         })->paginate(10);
         return response()->json([
             'status' => 'success',
@@ -26,19 +29,20 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
-        $request->validate([
-            'name' => 'required|max:255',
-            'password' => 'required|confirmed|min:6|max:32',
-            'phone_number' => [Rule::requiredIf(!$request->has('email')), 'unique:users,phone_number'],
-            'email' => [Rule::requiredIf(!$request->has('phone_number')), 'email', 'unique:users,email'],
-            'first_name' => 'nullable|max:255',
-            'last_name' => 'nullable|max:255',
-            'gender' => 'nullable|in:male,female',
-            'birthday' => 'nullable|date',
-            'address' => 'nullable',
-        ]);
         DB::beginTransaction();
         try {
+            $request->validate([
+                'name' => 'required|max:255',
+                'password' => 'required|confirmed|min:6|max:32',
+                'phone_number' => [Rule::requiredIf(!$request->has('email')), 'unique:users,phone_number'],
+                'email' => [Rule::requiredIf(!$request->has('phone_number')), 'email', 'unique:users,email'],
+                'language' => ['nullable', Rule::in(array_keys(Translation::Languages))],
+                'gender' => 'nullable|in:male,female',
+                'first_name' => 'nullable|max:255',
+                'last_name' => 'nullable|max:255',
+                'birthday' => 'nullable|date',
+                'address' => 'nullable',
+            ]);
             $user = new User();
             $user->parent_id = $parentId;
             $user->name = $request['name'];
@@ -53,6 +57,7 @@ class UserController extends Controller
             $profile->gender = $request->has('gender') ? $request['gender'] : null;
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
             $profile->address = $request->has('address') ? $request['address'] : null;
+            $profile->language = $request->has('language') ? $request['language'] : null;
             $profile->save();
             DB::commit();
             return response()->json([
@@ -71,6 +76,7 @@ class UserController extends Controller
 
     public function show(User $user): JsonResponse
     {
+        $user->Profile->Translate();
         return response()->json([
             'status' => 'success',
             'data' => $user,
@@ -79,19 +85,20 @@ class UserController extends Controller
 
     public function update(User $user, Request $request): JsonResponse
     {
-        $request->validate([
-            'name' => 'required|max:255',
-            'password' => 'nullable|confirmed|min:6|max:32',
-            'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
-            'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
-            'first_name' => 'nullable|max:255',
-            'last_name' => 'nullable|max:255',
-            'gender' => 'nullable|in:male,female',
-            'birthday' => 'nullable|date',
-            'address' => 'nullable',
-        ]);
         DB::beginTransaction();
         try {
+            $request->validate([
+                'name' => 'required|max:255',
+                'password' => 'nullable|confirmed|min:6|max:32',
+                'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
+                'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
+                'first_name' => 'nullable|max:255',
+                'last_name' => 'nullable|max:255',
+                'gender' => 'nullable|in:male,female',
+                'birthday' => 'nullable|date',
+                'address' => 'nullable',
+            ]);
+            $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['name'];
             if ($request->has('password'))
                 $user->password = Hash::make($request['password']);
@@ -103,6 +110,7 @@ class UserController extends Controller
                 $user->email = $request['email'];
                 $user->email_verified_at = null;
             }
+            $user->parent_id = $parentId;
             $user->save();
             $profile = $user->Profile;
             $profile->first_name = $request->has('first_name') ? $request['first_name'] : $profile->first_name;
@@ -112,6 +120,7 @@ class UserController extends Controller
             $profile->address = $request->has('address') ? $request['address'] : $profile->address;
             $profile->save();
             DB::commit();
+            $user->Profile->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $user,
@@ -142,6 +151,73 @@ class UserController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => $exception->getMessage()
+            ], 500);
+        }
+    }
+
+    public function translations()
+    {
+        $translations = Translation::where('user_id', auth()->id())->paginate(10);
+        return response()->json([
+            'status' => 'success',
+            'data' => $translations,
+        ], 200);
+    }
+
+    public function translate(Translation $translation, Request $request)
+    {
+        $request->validate([
+            'translation' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            $translation->update([
+                'value' => $request['translation'],
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $translation,
+                'message' => __('user.translation.updated'),
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function roles(User $user)
+    {
+        $roles = $user->Roles;
+        return response()->json([
+            'status' => 'success',
+            'data' => $roles,
+        ], 200);
+    }
+
+    public function set(User $user, Request $request)
+    {
+        DB::beginTransaction();
+        try {
+            $request->validate([
+                'roles.*' => 'required|exists:roles,id',
+            ]);
+            $user->Roles()->sync($request['roles']);
+            DB::commit();
+            $roles = $user->Roles;
+            return response()->json([
+                'status' => 'success',
+                'data' => $roles,
+                'message' => __('user.roles.updated'),
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
             ], 500);
         }
     }

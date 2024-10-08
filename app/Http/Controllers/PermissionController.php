@@ -42,6 +42,15 @@ class PermissionController extends Controller
         }
     }
 
+    public function show(Permission $permission)
+    {
+        $permission->name = translate($permission->name);
+        return response()->json([
+            'status' => 'success',
+            'data' => $permission,
+        ], 200);
+    }
+
     public function update(Permission $permission, Request $request)
     {
         $request->validate([
@@ -53,6 +62,7 @@ class PermissionController extends Controller
                 'name' => $request['name'],
             ]);
             DB::commit();
+            $permission->name = translate($permission->name);
             return response()->json([
                 'status' => 'success',
                 'data' => $permission,

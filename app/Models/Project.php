@@ -25,11 +25,6 @@ class Project extends Model
         });
     }
 
-    const Languages = [
-        'en' => 'English',
-        'fa' => 'Farsi',
-    ];
-
     public function User(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');
