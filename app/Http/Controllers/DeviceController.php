@@ -46,13 +46,10 @@ class DeviceController extends Controller
         }
     }
 
-    public function show(Device $device): JsonResponse
+    public function show(Device $device)
     {
         $device->Translate();
-        return response()->json([
-            'status' => 'success',
-            'data' => $device,
-        ], 200);
+        return view('devices.show', compact('device'));
     }
 
     public function update(DeviceRequest $request, Device $device)

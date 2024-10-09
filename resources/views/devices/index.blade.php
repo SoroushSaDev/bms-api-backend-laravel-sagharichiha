@@ -86,7 +86,11 @@
 {{--                           class="hover:underline hover:text-blue-500">--}}
 {{--                            Registers--}}
 {{--                        </a>--}}
-                        <form action="{{ route('devices.destroy', $device->id) }}" method="post">
+                        <a href="{{ route('devices.show', $device) }}"
+                           class="hover:text-blue-500">
+                            Show
+                        </a>
+                        <form action="{{ route('devices.destroy', $device) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
