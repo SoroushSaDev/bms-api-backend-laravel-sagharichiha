@@ -1,37 +1,40 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Permission;
+use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class PermissionController extends Controller
+class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $permissions = Permission::paginate(10);
+        $roles = Role::paginate(10);
         return response()->json([
             'status' => 'success',
-            'data' => $permissions,
+            'data' => $roles,
         ], 200);
     }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:permissions,name',
-        ]);
         DB::beginTransaction();
         try {
-            $permission = Permission::create([
+            $request->validate([
+                'name' => 'required|unique:permissions,name',
+                'permissions.*' => 'nullable|exists:permissions,id',
+            ]);
+            $role = Role::create([
                 'name' => $request['name'],
             ]);
+            if ($request->has('permissions'))
+                $role->Permissions()->sync($request['permissions']);
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'data' => $permission,
-                'message' => __('permission.created'),
+                'data' => $role,
+                'message' => __('role.created'),
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -42,31 +45,32 @@ class PermissionController extends Controller
         }
     }
 
-    public function show(Permission $permission)
+    public function show(Role $role)
     {
-        $permission->name = translate($permission->name);
+        $role->Translate();
         return response()->json([
             'status' => 'success',
-            'data' => $permission,
+            'data' => $role,
         ], 200);
     }
 
-    public function update(Permission $permission, Request $request)
+    public function update(Role $role, Request $request)
     {
         $request->validate([
-            'name' => ['required', ($request['name'] != $permission['name'] ? 'unique:permissions,name' : '')],
+            'name' => ['required', ($request['name'] != $role['name'] ? 'unique:permissions,name' : '')],
+            'permissions.*' => 'nullable|exists:permissions,id',
         ]);
         DB::beginTransaction();
         try {
-            $permission->update([
+            $role->update([
                 'name' => $request['name'],
             ]);
+            $role->Permissions()->sync($request['permissions']);
             DB::commit();
-            $permission->name = translate($permission->name);
             return response()->json([
                 'status' => 'success',
-                'data' => $permission,
-                'message' => __('permission.updated'),
+                'data' => $role,
+                'message' => __('role.updated'),
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -77,15 +81,16 @@ class PermissionController extends Controller
         }
     }
 
-    public function destroy(Permission $permission)
+    public function destroy(Role $role)
     {
         DB::beginTransaction();
         try {
-            $permission->delete();
+            $role->Permissions()->sync([]);
+            $role->delete();
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => __('permission.deleted'),
+                'message' => __('role.deleted'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();

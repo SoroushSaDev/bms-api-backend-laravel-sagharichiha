@@ -1,9 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\DeviceRequest;
 use App\Models\Device;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -18,14 +21,17 @@ class DeviceController extends Controller
             })
             ->when($request->has('type'), function ($query) use ($request) {
                 $query->where('type', $request['type']);
-            })->get();
+           })->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
         });
-        return view('devices.index', compact('devices'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $devices,
+        ], 200);
     }
 
-    public function store(DeviceRequest $request)
+    public function store(DeviceRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -39,10 +45,18 @@ class DeviceController extends Controller
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
             $device->save();
             DB::commit();
-            return redirect(route('devices.index'));
+            $device->Translate();
+            return response()->json([
+                'status' => 'success',
+                'data' => $device,
+                'message' => __('device.created'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
@@ -55,7 +69,7 @@ class DeviceController extends Controller
         ], 200);
     }
 
-    public function update(DeviceRequest $request, Device $device)
+    public function update(DeviceRequest $request, Device $device): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -68,10 +82,18 @@ class DeviceController extends Controller
             $device->wifi = $request->has('type') ? $request['wifi'] : $device->wifi;
             $device->save();
             DB::commit();
-            return redirect(route('devices.index'));
+            $device->Translate();
+            return response()->json([
+                'status' => 'success',
+                'data' => $device,
+                'message' => __('device.updated'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
@@ -81,10 +103,16 @@ class DeviceController extends Controller
         try {
             $device->delete();
             DB::commit();
-            return redirect(route('devices.index'));
+            return response()->json([
+                'status' => 'success',
+                'message' => __('device.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 }

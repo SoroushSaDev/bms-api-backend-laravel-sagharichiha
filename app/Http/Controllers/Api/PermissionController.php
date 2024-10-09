@@ -1,76 +1,37 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Models\Role;
+use App\Models\Permission;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class RoleController extends Controller
+class PermissionController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::paginate(10);
+        $permissions = Permission::paginate(10);
         return response()->json([
             'status' => 'success',
-            'data' => $roles,
+            'data' => $permissions,
         ], 200);
     }
 
     public function store(Request $request)
     {
-        DB::beginTransaction();
-        try {
-            $request->validate([
-                'name' => 'required|unique:permissions,name',
-                'permissions.*' => 'nullable|exists:permissions,id',
-            ]);
-            $role = Role::create([
-                'name' => $request['name'],
-            ]);
-            if ($request->has('permissions'))
-                $role->Permissions()->sync($request['permissions']);
-            DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $role,
-                'message' => __('role.created'),
-            ]);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
-        }
-    }
-
-    public function show(Role $role)
-    {
-        $role->Translate();
-        return response()->json([
-            'status' => 'success',
-            'data' => $role,
-        ], 200);
-    }
-
-    public function update(Role $role, Request $request)
-    {
         $request->validate([
-            'name' => ['required', ($request['name'] != $role['name'] ? 'unique:permissions,name' : '')],
-            'permissions.*' => 'nullable|exists:permissions,id',
+            'name' => 'required|unique:permissions,name',
         ]);
         DB::beginTransaction();
         try {
-            $role->update([
+            $permission = Permission::create([
                 'name' => $request['name'],
             ]);
-            $role->Permissions()->sync($request['permissions']);
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'data' => $role,
-                'message' => __('role.updated'),
+                'data' => $permission,
+                'message' => __('permission.created'),
             ]);
         } catch (\Exception $exception) {
             DB::rollBack();
@@ -81,16 +42,50 @@ class RoleController extends Controller
         }
     }
 
-    public function destroy(Role $role)
+    public function show(Permission $permission)
+    {
+        $permission->name = translate($permission->name);
+        return response()->json([
+            'status' => 'success',
+            'data' => $permission,
+        ], 200);
+    }
+
+    public function update(Permission $permission, Request $request)
+    {
+        $request->validate([
+            'name' => ['required', ($request['name'] != $permission['name'] ? 'unique:permissions,name' : '')],
+        ]);
+        DB::beginTransaction();
+        try {
+            $permission->update([
+                'name' => $request['name'],
+            ]);
+            DB::commit();
+            $permission->name = translate($permission->name);
+            return response()->json([
+                'status' => 'success',
+                'data' => $permission,
+                'message' => __('permission.updated'),
+            ]);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function destroy(Permission $permission)
     {
         DB::beginTransaction();
         try {
-            $role->Permissions()->sync([]);
-            $role->delete();
+            $permission->delete();
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => __('role.deleted'),
+                'message' => __('permission.deleted'),
             ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
