@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Auth\EmailVerificationNotificationController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\PermissionController;
@@ -22,7 +21,6 @@ Route::middleware('auth:sanctum')->group(function () {
         return $request->user();
     });
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
-    Route::post('/email/verify', [EmailVerificationNotificationController::class, 'store']);
     Route::prefix('/cities')->name('cities.')->group(function () {
         Route::get('/', [CityController::class, 'index'])->name('index');
         Route::post('/', [CityController::class, 'store'])->name('store');

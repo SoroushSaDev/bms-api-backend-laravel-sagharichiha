@@ -12,6 +12,11 @@ class CityController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
+        if (!City::CanShow())
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
         $cities = City::with('Country')->select(['id', 'name', 'country_id'])->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
         })->paginate(10);
@@ -26,12 +31,17 @@ class CityController extends Controller
 
     public function store(CityRequest $request): JsonResponse
     {
+        if (!City::CanCreate())
+            return response()->json([
+               'status' => 'error',
+               'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
-            $city = new City();
-            $city->country_id = $request['country'];
-            $city->name = $request['name'];
-            $city->save();
+            $city = City::create([
+               'country_id' => $request['country'],
+               'name' => $request['name'],
+            ]);
             DB::commit();
             $city->Translate();
             return response()->json([
@@ -59,11 +69,17 @@ class CityController extends Controller
 
     public function update(City $city, CityRequest $request): JsonResponse
     {
+        if (!$city->CanEdit())
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
-            $city->country_id = $request['country'];
-            $city->name = $request['name'];
-            $city->save();
+            $city->update([
+                'country_id' => $request['country'],
+                'name' => $request['name'],
+            ]);
             DB::commit();
             $city->Translate();
             return response()->json([
@@ -82,6 +98,11 @@ class CityController extends Controller
 
     public function destroy(City $city): JsonResponse
     {
+        if (!City::Can('delete'))
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
             $city->delete();

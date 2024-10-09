@@ -78,4 +78,24 @@ class User extends Authenticatable
     {
         return $this->belongsToMany(Role::class, 'role_user');
     }
+
+    public function FullName(): string
+    {
+        $profile = $this->Profile;
+        return $profile->first_name . ' ' . $profile->last_name;
+    }
+
+    public function HasRole($role): bool
+    {
+        return in_array($role, $this->Roles->pluck('name')->toArray());
+    }
+
+    public function HasPermission($permission): bool
+    {
+        $permissions = collect();
+        foreach ($this->Roles as $role) {
+            $permissions->push($role->Permissions);
+        }
+        return in_array($permission, $permissions->pluck('name')->toArray());
+    }
 }

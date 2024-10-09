@@ -39,6 +39,8 @@ class AuthenticatedSessionController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
 
-        return response()->json(['message' => 'Logout successful']);
+        return response()->json([
+            'message' => __('auth.logout'),
+        ], 200);
     }
 }

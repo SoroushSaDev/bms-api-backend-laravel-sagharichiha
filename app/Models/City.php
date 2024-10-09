@@ -34,4 +34,24 @@ class City extends Model
         $this->name = translate($this->name);
         $this->Country->name = translate($this->Country->en_name);
     }
+
+    public static function CanCreate(): bool
+    {
+        return auth()->user()->type != 'user' || auth()->user()->HasPermission( 'create_cities');
+    }
+
+    public function CanEdit(): bool
+    {
+        return auth()->user()->type == 'admin' || $this->user_id == auth()->id() || auth()->user()->HasPermission('edit_cities');
+    }
+
+    public static function CanShow(): bool
+    {
+        return auth()->user()->type != 'user' || auth()->user()->HasPermission('show_cities');
+    }
+
+    public function CanDelete(): bool
+    {
+        return auth()->user()->type == 'admin' || auth()->user()->HasPermission('delete_cities');
+    }
 }
