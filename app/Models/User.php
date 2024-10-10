@@ -82,7 +82,7 @@ class User extends Authenticatable
     public function FullName(): string
     {
         $profile = $this->Profile;
-        return $profile->first_name . ' ' . $profile->last_name;
+        return translate($profile->first_name) . ' ' . translate($profile->last_name);
     }
 
     public function HasRole($role): bool

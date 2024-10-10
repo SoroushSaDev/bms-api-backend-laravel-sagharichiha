@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Controller;
 use App\Mail\VerifyEmail;
 use App\Models\VerifyCode;
 use Carbon\Carbon;

@@ -1,8 +1,7 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
 use App\Models\Profile;
 use App\Models\Translation;
 use App\Models\User;
@@ -14,18 +13,21 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index(Request $request): JsonResponse
+    public function index(Request $request)
     {
         $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
             $query->where('parent_id', $request['parent_id']);
-        })->paginate(10);
-        return response()->json([
-            'status' => 'success',
-            'data' => $users
-        ], 200);
+        })->get();
+        return view('users.index', compact('users'));
     }
 
-    public function store(Request $request): JsonResponse
+    public function create()
+    {
+        $languages = Translation::Languages;
+        return view('users.create', compact('languages'));
+    }
+
+    public function store(Request $request)
     {
         $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         DB::beginTransaction();
@@ -59,36 +61,32 @@ class UserController extends Controller
             $profile->language = $request->has('language') ? $request['language'] : null;
             $profile->save();
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-                'message' => __('user.created'),
-            ], 200);
+            return redirect(route('users.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 500);
+            dd($exception);
         }
     }
 
-    public function show(User $user): JsonResponse
+    public function show(User $user)
     {
         $user->Profile->Translate();
-        return response()->json([
-            'status' => 'success',
-            'data' => $user,
-        ], 200);
+        return view('users.show', compact('user'));
     }
 
-    public function update(User $user, Request $request): JsonResponse
+    public function edit(User $user)
+    {
+        $languages = Translation::Languages;
+        return view('users.edit', compact('user', 'languages'));
+    }
+
+    public function update(User $user, Request $request)
     {
         DB::beginTransaction();
         try {
             $request->validate([
                 'name' => 'required|max:255',
-                'password' => 'nullable|confirmed|min:6|max:32',
+                'password' => 'nullable|min:6|max:32'. ($request->has('password') ? '|confirmed' : ''),
                 'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
                 'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
                 'first_name' => 'nullable|max:255',
@@ -99,7 +97,7 @@ class UserController extends Controller
             ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['name'];
-            if ($request->has('password'))
+            if ($request->has('password') && $request['password'] != null)
                 $user->password = Hash::make($request['password']);
             if ($request->has('phone_number') && $request['phone_number'] != $user->phone_number) {
                 $user->phone_number = $request['phone_number'];
@@ -117,40 +115,28 @@ class UserController extends Controller
             $profile->gender = $request->has('gender') ? $request['gender'] : $profile->gender;
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : $profile->birthday;
             $profile->address = $request->has('address') ? $request['address'] : $profile->address;
+            $profile->language = $request->has('language') ? $request['language'] : $profile->language;
             $profile->save();
             DB::commit();
             $user->Profile->Translate();
-            return response()->json([
-                'status' => 'success',
-                'data' => $user,
-                'message' => __('user.updated'),
-            ], 200);
+            return redirect(route('users.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 500);
+            dd($exception);
         }
     }
 
-    public function destroy(User $user): JsonResponse
+    public function destroy(User $user)
     {
         DB::beginTransaction();
         try {
             $user->Profile()->delete();
             $user->delete();
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'message' => __('user.deleted'),
-            ], 200);
+            return redirect(route('users.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage()
-            ], 500);
+           dd($exception);
         }
     }
 

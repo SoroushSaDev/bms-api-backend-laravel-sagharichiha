@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Permission;
@@ -11,11 +11,13 @@ class PermissionController extends Controller
 {
     public function index(Request $request)
     {
-        $permissions = Permission::paginate(10);
-        return response()->json([
-            'status' => 'success',
-            'data' => $permissions,
-        ], 200);
+        $permissions = Permission::all();
+        return view('permissions.index', compact('permissions'));
+    }
+
+    public function create()
+    {
+        return view('permissions.create');
     }
 
     public function store(Request $request)
@@ -25,31 +27,26 @@ class PermissionController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $permission = Permission::create([
+            Permission::create([
                 'name' => $request['name'],
             ]);
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $permission,
-                'message' => __('permission.created'),
-            ]);
+            return redirect(route('permissions.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 
     public function show(Permission $permission)
     {
         $permission->name = translate($permission->name);
-        return response()->json([
-            'status' => 'success',
-            'data' => $permission,
-        ], 200);
+        return view('permissions.show', compact('permission'));
+    }
+
+    public function edit(Permission $permission)
+    {
+        return view('permissions.edit', compact('permission'));
     }
 
     public function update(Permission $permission, Request $request)
@@ -64,17 +61,10 @@ class PermissionController extends Controller
             ]);
             DB::commit();
             $permission->name = translate($permission->name);
-            return response()->json([
-                'status' => 'success',
-                'data' => $permission,
-                'message' => __('permission.updated'),
-            ]);
+            return redirect(route('permissions.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 
@@ -84,16 +74,10 @@ class PermissionController extends Controller
         try {
             $permission->delete();
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'message' => __('permission.deleted'),
-            ], 200);
+            return redirect(route('permissions.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 }

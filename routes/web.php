@@ -1,17 +1,22 @@
 <?php
 
+use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    $route = auth()->check() ? route('devices') : route('login');
+    $route = auth()->check() ? route('devices.index') : route('login');
     return redirect($route);
 });
 
 Route::get('/login', [HomeController::class, 'login'])->name('login');
-Route::middleware('auth')->group(function() {
-//    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+Route::middleware('auth')->group(function () {
+    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
 //    Route::prefix('/cities')->name('cities.')->group(function () {
 //        Route::get('/', [CityController::class, 'index'])->name('index');
 //        Route::post('/', [CityController::class, 'store'])->name('store');
@@ -22,7 +27,9 @@ Route::middleware('auth')->group(function() {
     Route::prefix('/devices')->name('devices.')->group(function () {
         Route::get('/', [DeviceController::class, 'index'])->name('index');
         Route::post('/', [DeviceController::class, 'store'])->name('store');
+        Route::get('/create', [DeviceController::class, 'create'])->name('create');
         Route::get('/{device:id}', [DeviceController::class, 'show'])->name('show');
+        Route::get('/{device:id}/edit', [DeviceController::class, 'edit'])->name('edit');
         Route::patch('/{device:id}', [DeviceController::class, 'update'])->name('update');
         Route::delete('/{device:id}', [DeviceController::class, 'destroy'])->name('destroy');
     });
@@ -33,23 +40,21 @@ Route::middleware('auth')->group(function() {
 //        Route::patch('/{project:id}', [ProjectController::class, 'update'])->name('update');
 //        Route::delete('/{project:id}', [ProjectController::class, 'destroy'])->name('destroy');
 //    });
-//    Route::prefix('/users')->name('users.')->group(function () {
-//        Route::get('/', [UserController::class, 'index'])->name('index');
-//        Route::post('/', [UserController::class, 'store'])->name('store');
-//        Route::get('/{user:id}', [UserController::class, 'show'])->name('show');
-//        Route::patch('/{user:id}', [UserController::class, 'update'])->name('update');
-//        Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('destroy');
+    Route::prefix('/users')->name('users.')->group(function () {
+        Route::get('/', [UserController::class, 'index'])->name('index');
+        Route::post('/', [UserController::class, 'store'])->name('store');
+        Route::get('/create', [UserController::class, 'create'])->name('create');
+        Route::get('/{user:id}', [UserController::class, 'show'])->name('show');
+        Route::get('/{user:id}/edit', [UserController::class, 'edit'])->name('edit');
+        Route::patch('/{user:id}', [UserController::class, 'update'])->name('update');
+        Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('destroy');
 //        Route::get('/translations', [UserController::class, 'translations'])->name('translations');
 //        Route::post('/translations/{translation:id}/translate', [UserController::class, 'translate'])->name('translate');
-//        Route::middleware(AdminMiddleware::class)->group(function () {
-//            Route::get('/{user:id}/roles', [UserController::class, 'roles'])->name('roles');
-//            Route::post('/{user:id}/set', [UserController::class, 'set'])->name('set');
-//        });
-//    });
-//    Route::prefix('/verify')->name('verify.')->group(function () {
-//        Route::post('/send', [VerifyCodeController::class, 'send'])->name('send');
-//        Route::post('/check', [VerifyCodeController::class, 'check'])->name('check');
-//    });
+        Route::middleware(AdminMiddleware::class)->group(function () {
+            Route::get('/{user:id}/roles', [UserController::class, 'roles'])->name('roles');
+            Route::post('/{user:id}/set', [UserController::class, 'set'])->name('set');
+        });
+    });
 //    Route::prefix('/registers')->name('registers.')->group(function () {
 //        Route::get('/', [RegisterController::class, 'index'])->name('index');
 //        Route::post('/', [RegisterController::class, 'store'])->name('store');
@@ -57,22 +62,26 @@ Route::middleware('auth')->group(function() {
 //        Route::patch('/{register:id}', [RegisterController::class, 'update'])->name('update');
 //        Route::delete('/{register:id}', [RegisterController::class, 'destroy'])->name('destroy');
 //    });
-//    Route::middleware(AdminMiddleware::class)->group(function () {
-//        Route::prefix('/permissions')->name('permissions.')->group(function () {
-//            Route::get('/', [PermissionController::class, 'index'])->name('index');
-//            Route::post('/', [PermissionController::class, 'store'])->name('store');
-//            Route::get('/{permission:id}', [PermissionController::class, 'show'])->name('show');
-//            Route::patch('/{permission:id}', [PermissionController::class, 'update'])->name('update');
-//            Route::delete('/{permission:id}', [PermissionController::class, 'destroy'])->name('destroy');
-//        });
-//        Route::prefix('/roles')->name('roles.')->group(function () {
-//            Route::get('/', [RoleController::class, 'index'])->name('index');
-//            Route::post('/', [RoleController::class, 'store'])->name('store');
-//            Route::get('/{role:id}', [RoleController::class, 'show'])->name('show');
-//            Route::patch('/{role:id}', [RoleController::class, 'update'])->name('update');
-//            Route::delete('/{role:id}', [RoleController::class, 'destroy'])->name('destroy');
-//        });
-//    });
+    Route::middleware(AdminMiddleware::class)->group(function () {
+        Route::prefix('/permissions')->name('permissions.')->group(function () {
+            Route::get('/', [PermissionController::class, 'index'])->name('index');
+            Route::post('/', [PermissionController::class, 'store'])->name('store');
+            Route::get('/create', [PermissionController::class, 'create'])->name('create');
+            Route::get('/{permission:id}', [PermissionController::class, 'show'])->name('show');
+            Route::get('/{permission:id}/edit', [PermissionController::class, 'edit'])->name('edit');
+            Route::patch('/{permission:id}', [PermissionController::class, 'update'])->name('update');
+            Route::delete('/{permission:id}', [PermissionController::class, 'destroy'])->name('destroy');
+        });
+        Route::prefix('/roles')->name('roles.')->group(function () {
+            Route::get('/', [RoleController::class, 'index'])->name('index');
+            Route::post('/', [RoleController::class, 'store'])->name('store');
+            Route::get('/create', [RoleController::class, 'create'])->name('create');
+            Route::get('/{role:id}', [RoleController::class, 'show'])->name('show');
+            Route::get('/{role:id}/edit', [RoleController::class, 'edit'])->name('edit');
+            Route::patch('/{role:id}', [RoleController::class, 'update'])->name('update');
+            Route::delete('/{role:id}', [RoleController::class, 'destroy'])->name('destroy');
+        });
+    });
 });
 
 //require __DIR__.'/auth.php';

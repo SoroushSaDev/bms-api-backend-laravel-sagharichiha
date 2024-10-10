@@ -35,6 +35,16 @@ class Device extends Model
         return $this->hasMany(Register::class, 'device_id', 'id');
     }
 
+    public function Children(): HasMany
+    {
+        return $this->hasMany(self::class, 'parent_id', 'id');
+    }
+
+    public function Parent(): BelongsTo
+    {
+        return $this->belongsTo(self::class, 'parent_id', 'id');
+    }
+
     public function Translate(): void
     {
         TranslateAll($this, ['name', 'type', 'brand', 'model', 'description']);

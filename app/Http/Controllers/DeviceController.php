@@ -12,17 +12,22 @@ class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'type', 'brand', 'model', 'description'])
-            ->when(auth()->user()->type != 'admin', function ($query) {
-                $query->where('user_id', auth()->id());
-            })
-            ->when($request->has('type'), function ($query) use ($request) {
-                $query->where('type', $request['type']);
-            })->get();
+        $devices = Device::with(['User', 'Registers'])->when(auth()->user()->type != 'admin', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->when(auth()->user()->type == 'admin', function ($query) {
+            $query->where('parent_id', 0);
+        })->when($request->has('type'), function ($query) use ($request) {
+            $query->where('type', $request['type']);
+        })->get();
         $devices->map(function ($device) {
             $device->Translate();
         });
         return view('devices.index', compact('devices'));
+    }
+
+    public function create()
+    {
+        return view('devices.create');
     }
 
     public function store(DeviceRequest $request)
@@ -50,6 +55,11 @@ class DeviceController extends Controller
     {
         $device->Translate();
         return view('devices.show', compact('device'));
+    }
+
+    public function edit(Device $device)
+    {
+        return view('devices.edit', compact('device'));
     }
 
     public function update(DeviceRequest $request, Device $device)

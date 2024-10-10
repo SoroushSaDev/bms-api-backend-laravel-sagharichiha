@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\Models\Role;
@@ -11,11 +11,13 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::paginate(10);
-        return response()->json([
-            'status' => 'success',
-            'data' => $roles,
-        ], 200);
+        $roles = Role::all();
+        return view('roles.index', compact('roles'));
+    }
+
+    public function create()
+    {
+        return view('roles.create');
     }
 
     public function store(Request $request)
@@ -32,27 +34,22 @@ class RoleController extends Controller
             if ($request->has('permissions'))
                 $role->Permissions()->sync($request['permissions']);
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $role,
-                'message' => __('role.created'),
-            ]);
+            return redirect(route('roles.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 
     public function show(Role $role)
     {
         $role->Translate();
-        return response()->json([
-            'status' => 'success',
-            'data' => $role,
-        ], 200);
+        return view('roles.show', compact('role'));
+    }
+
+    public function edit(Role $role)
+    {
+        return view('roles.edit', compact('role'));
     }
 
     public function update(Role $role, Request $request)
@@ -68,17 +65,10 @@ class RoleController extends Controller
             ]);
             $role->Permissions()->sync($request['permissions']);
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $role,
-                'message' => __('role.updated'),
-            ]);
+            return redirect(route('roles.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 
@@ -89,16 +79,10 @@ class RoleController extends Controller
             $role->Permissions()->sync([]);
             $role->delete();
             DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'message' => __('role.deleted'),
-            ], 200);
+            return redirect(route('roles.index'));
         } catch (\Exception $exception) {
             DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
+            dd($exception);
         }
     }
 }

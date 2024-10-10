@@ -38,9 +38,12 @@ class AuthenticatedSessionController extends Controller
     public function destroy(Request $request)
     {
         $request->user()->currentAccessToken()->delete();
-
-        return response()->json([
-            'message' => __('auth.logout'),
-        ], 200);
+        if (Auth::check())
+            Auth::logout();
+        return $request->is('api/*')
+            ? response()->json([
+                'message' => __('auth.logout'),
+            ], 200)
+            : redirect(route('login'));
     }
 }

@@ -1,17 +1,18 @@
 @php
     use Carbon\Carbon;
+    $title = __('Users');
 @endphp
 @extends('layouts.app')
-@section('title', __('Devices'))
+@section('title', $title)
 @section('content')
     <div class="flex justify-between items-center">
         <div></div>
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
-            {{ __('Devices') }}
+            {{ $title }}
         </h2>
-        <a href="{{ route('devices.create') }}"
+        <a href="{{ route('users.create') }}"
            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Add Device
+            Add User
         </a>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
@@ -22,25 +23,28 @@
                     #
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    User
+                    Username
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Name
+                    Email
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Phone Number
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Type
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Brand
+                    First Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Model
+                    Last Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    LAN
+                    Gender
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    WiFi
+                    Parent
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -54,52 +58,55 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($devices as $key => $device)
+            @forelse($users as $key => $user)
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td class="px-6 py-4">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->User?->name ?? '---' }}
+                        {{ $user->name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->name }}
+                        {{ $user->email ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->type ?? '---' }}
+                        {{ $user->phone_number ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->brand ?? '---' }}
+                        {{ $user->type ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->model ?? '---' }}
+                        {{ $user->Profile?->first_name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->lan ?? '---' }}
+                        {{ $user->Profile?->last_name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->wifi ?? '---' }}
+                        {{ $user->Profile?->gender ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($device->created_at)->format('Y/m/d | H:m:i') }}
+                        {{ $user->Parent?->name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($device->updated_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($user->created_at)->format('Y/m/d | H:m:i') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ Carbon::parse($user->updated_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4 flex">
                         {{--                        <a href="{{ route('registers.index') . '?device_id=' . $device->id }}"--}}
                         {{--                           class="hover:underline hover:text-blue-500">--}}
                         {{--                            Registers--}}
                         {{--                        </a>--}}
-                        <a href="{{ route('devices.show', $device) }}"
+                        <a href="{{ route('users.show', $user) }}"
                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Show
                         </a>
-                        <a href="{{ route('devices.edit', $device) }}"
+                        <a href="{{ route('users.edit', $user) }}"
                            class="ml-5 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
                             Edit
                         </a>
-                        <form action="{{ route('devices.destroy', $device) }}" method="post">
+                        <form action="{{ route('users.destroy', $user) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
@@ -111,7 +118,7 @@
                 </tr>
             @empty
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td colspan="11" class="px-6 py-4">
+                    <td colspan="10" class="px-6 py-4">
                         No Records
                     </td>
                 </tr>
