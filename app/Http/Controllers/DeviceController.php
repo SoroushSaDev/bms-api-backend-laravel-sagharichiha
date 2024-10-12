@@ -7,6 +7,7 @@ use App\Models\Device;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class DeviceController extends Controller
 {
@@ -42,7 +43,9 @@ class DeviceController extends Controller
             $device->description = $request->has('description') ? $request['description'] : null;
             $device->lan = $request->has('lan') ? $request['lan'] : null;
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
+            $device->mqtt_topic = 'METARIOM/' . str_replace(' ', '_', $device->name);
             $device->save();
+            $device->SendToClient();
             DB::commit();
             return redirect(route('devices.index'));
         } catch (\Exception $exception) {

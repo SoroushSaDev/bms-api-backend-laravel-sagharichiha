@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Http;
 
 class Device extends Model
 {
@@ -43,6 +44,16 @@ class Device extends Model
     public function Parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id', 'id');
+    }
+
+    public function SendToClient(): void
+    {
+        Http::post(env('API_URL') . 'devices', [
+            'name' => $this->name,
+            'topic' => $this->mqtt_topic,
+            'token' => env('API_TOKEN'),
+            'description' => $this->description,
+        ]);
     }
 
     public function Translate(): void
