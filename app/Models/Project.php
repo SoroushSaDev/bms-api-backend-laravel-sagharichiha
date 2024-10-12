@@ -18,10 +18,14 @@ class Project extends Model
     {
         parent::boot();
         static::creating(function (Project $project) {
-            $project->user_id = auth()->check() ? auth()->id() : null;
+            if (is_null($project->user_id)) {
+                $project->user_id = auth()->check() ? auth()->id() : null;
+            }
         });
         static::updating(function (Project $project) {
-            $project->user_id = auth()->check() ? auth()->id() : null;
+            if (is_null($project->user_id)) {
+                $project->user_id = auth()->check() ? auth()->id() : null;
+            }
         });
     }
 
@@ -38,6 +42,12 @@ class Project extends Model
     public function Devices(): HasMany
     {
         return $this->hasMany(Device::class, 'project_id', 'id');
+    }
+
+    public function HasDevice($device): int
+    {
+        $devices = Device::where('parent_id', $device)->where('project_id', $this->id)->get();
+        return count($devices);
     }
 
     public function Translate(): void

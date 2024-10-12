@@ -26,9 +26,10 @@ class ProjectRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'city' => 'required|exists:cities,id',
-            'description' => 'nullable',
             'address' => 'nullable',
+            'description' => 'nullable',
+            'user' => 'nullable|exists:users,id',
+            'city' => 'required|exists:cities,id',
             'devices.*' => 'nullable|exists:devices,id',
         ];
     }

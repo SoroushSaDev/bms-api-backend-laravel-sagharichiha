@@ -37,7 +37,7 @@ class RegisterController extends Controller
             $register->save();
             DB::commit();
             $register->Translate();
-            return redirect(route('registers.index', $device));
+            return redirect(route('devices.registers', $device));
         } catch (\Exception $exception) {
             DB::rollBack();
             dd($exception);
@@ -68,7 +68,7 @@ class RegisterController extends Controller
             DB::commit();
             $register->Translate();
             $device = $register->Device;
-            return redirect(route('registers.index', $device));
+            return redirect(route('devices.registers', $device));
         } catch (\Exception $exception) {
             DB::rollBack();
             dd($exception);
@@ -79,9 +79,10 @@ class RegisterController extends Controller
     {
         DB::beginTransaction();
         try {
-            $register->delete();
+            $device = $register->Device;
             DB::commit();
-            return redirect(route('registers.index'));
+            $register->delete();
+            return redirect(route('devices.registers', $device));
         } catch (\Exception $exception) {
             DB::rollBack();
             dd($exception);

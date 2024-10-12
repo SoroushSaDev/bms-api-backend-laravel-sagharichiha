@@ -5,6 +5,7 @@ use App\Http\Controllers\CityController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\TranslationController;
@@ -33,14 +34,15 @@ Route::middleware('auth')->group(function () {
         Route::patch('/{city:id}', [CityController::class, 'update'])->name('update');
         Route::delete('/{city:id}', [CityController::class, 'destroy'])->name('destroy');
     });
-    Route::resource('devices', DeviceController::class);
-//    Route::prefix('/projects')->name('projects.')->group(function () {
-//        Route::get('/', [ProjectController::class, 'index'])->name('index');
-//        Route::post('/', [ProjectController::class, 'store'])->name('store');
-//        Route::get('/{project:id}', [ProjectController::class, 'show'])->name('show');
-//        Route::patch('/{project:id}', [ProjectController::class, 'update'])->name('update');
-//        Route::delete('/{project:id}', [ProjectController::class, 'destroy'])->name('destroy');
-//    });
+    Route::prefix('/projects')->name('projects.')->group(function () {
+        Route::get('/', [ProjectController::class, 'index'])->name('index');
+        Route::post('/', [ProjectController::class, 'store'])->name('store');
+        Route::get('/create', [ProjectController::class, 'create'])->name('create');
+        Route::get('/{project:id}', [ProjectController::class, 'show'])->name('show');
+        Route::get('/{project:id}/edit', [ProjectController::class, 'edit'])->name('edit');
+        Route::patch('/{project:id}', [ProjectController::class, 'update'])->name('update');
+        Route::delete('/{project:id}', [ProjectController::class, 'destroy'])->name('destroy');
+    });
     Route::prefix('/users')->name('users.')->group(function () {
         Route::get('/', [UserController::class, 'index'])->name('index');
         Route::post('/', [UserController::class, 'store'])->name('store');
@@ -51,17 +53,26 @@ Route::middleware('auth')->group(function () {
         Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('destroy');
     });
     Route::resource('translations', TranslationController::class);
-    Route::name('registers.')->group(function () {
-        Route::prefix('/registers')->group(function () {
-            Route::get('/{register:id}', [RegisterController::class, 'show'])->name('show');
-            Route::get('/{register:id}/edit', [RegisterController::class, 'edit'])->name('edit');
-            Route::patch('/{register:id}', [RegisterController::class, 'update'])->name('update');
-            Route::delete('/{register:id}', [RegisterController::class, 'destroy'])->name('destroy');
-        });
+    Route::prefix('/devices/{device:id}')->name('registers.')->group(function () {
+        Route::post('/', [RegisterController::class, 'store'])->name('store');
+        Route::get('/create', [RegisterController::class, 'create'])->name('create');
+    });
+    Route::prefix('/registers')->name('registers.')->group(function () {
+        Route::get('/{register:id}', [RegisterController::class, 'show'])->name('show');
+        Route::get('/{register:id}/edit', [RegisterController::class, 'edit'])->name('edit');
+        Route::patch('/{register:id}', [RegisterController::class, 'update'])->name('update');
+        Route::delete('/{register:id}', [RegisterController::class, 'destroy'])->name('destroy');
+    });
+    Route::prefix('/devices')->name('devices.')->group(function () {
+        Route::get('/', [DeviceController::class, 'index'])->name('index');
+        Route::post('/', [DeviceController::class, 'store'])->name('store');
+        Route::get('/create', [DeviceController::class, 'create'])->name('create');
         Route::prefix('/{device:id}')->group(function () {
-            Route::get('/', [RegisterController::class, 'index'])->name('index');
-            Route::post('/', [RegisterController::class, 'store'])->name('store');
-            Route::get('/create', [RegisterController::class, 'create'])->name('create');
+            Route::get('/', [DeviceController::class, 'show'])->name('show');
+            Route::get('/edit', [DeviceController::class, 'edit'])->name('edit');
+            Route::patch('/', [DeviceController::class, 'update'])->name('update');
+            Route::delete('/', [DeviceController::class, 'destroy'])->name('destroy');
+            Route::get('/registers', [RegisterController::class, 'index'])->name('registers');
         });
     });
     Route::middleware(AdminMiddleware::class)->group(function () {

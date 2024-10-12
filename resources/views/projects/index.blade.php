@@ -1,21 +1,18 @@
 @php
     use Carbon\Carbon;
-    $title = $device->name . ' ' . __('Registers');
+    $title = __('Projects');
 @endphp
 @extends('layouts.app')
 @section('title', $title)
 @section('content')
     <div class="flex justify-between items-center">
-        <a href="{{ route('devices.index') }}"
-           class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
-            Back
-        </a>
+        <div></div>
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
             {{ $title }}
         </h2>
-        <a href="{{ route('registers.create', $device) }}"
+        <a href="{{ route('projects.create') }}"
            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Add Register
+            Add Project
         </a>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
@@ -26,16 +23,16 @@
                     #
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Title
+                    Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Value
+                    User
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Unit
+                    City
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Type
+                    Devices Count
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -49,39 +46,39 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($registers as $key => $register)
+            @forelse($projects as $key => $project)
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td class="px-6 py-4">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $register->title }}
+                        {{ $project->name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $register->value ?? '---' }}
+                        {{ $project->User?->name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $register->unit ?? '---' }}
+                        {{ $project->City?->name ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $register->type ?? '---' }}
+                        {{ $project->Devices->count() }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($register->created_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($project->created_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($register->updated_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($project->updated_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4 flex">
-                        <a href="{{ route('registers.show', [$register]) }}"
+                        <a href="{{ route('projects.show', $project) }}"
                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Show
                         </a>
-                        <a href="{{ route('registers.edit', [$register]) }}"
+                        <a href="{{ route('projects.edit', $project) }}"
                            class="ml-5 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
                             Edit
                         </a>
-                        <form action="{{ route('registers.destroy', [$register]) }}" method="post">
+                        <form action="{{ route('projects.destroy', $project) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
