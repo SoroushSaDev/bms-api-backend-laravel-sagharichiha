@@ -15,17 +15,12 @@ class AuthenticatedSessionController extends Controller
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
         ]);
-
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        if (!Auth::attempt($request->only('email', 'password')))
             return response()->json(['message' => 'Invalid login credentials'], 401);
-        }
-
         $user = Auth::user();
         $token = $user->createToken('auth_token')->plainTextToken;
-
         $lang = $user->Profile->language;
         App::setLocale($lang);
-
         return response()->json([
             'access_token' => $token,
             'token_type' => 'Bearer',
@@ -37,13 +32,14 @@ class AuthenticatedSessionController extends Controller
 
     public function destroy(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
-        if (Auth::check())
-            Auth::logout();
-        return $request->is('api/*')
-            ? response()->json([
+        if ($request->is('api/*')) {
+            $request->user()->currentAccessToken()->delete();
+            return response()->json([
                 'message' => __('auth.logout'),
-            ], 200)
-            : redirect(route('login'));
+            ], 200);
+        } else {
+            Auth::logout();
+            return redirect(route('login'));
+        }
     }
 }

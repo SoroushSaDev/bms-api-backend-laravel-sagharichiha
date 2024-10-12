@@ -41,6 +41,6 @@ class DeviceRequest extends FormRequest
             'status' => 'error',
             'message' => 'Validation errors',
             'data' => $validator->errors()
-        ]));
+        ], 422));
     }
 }

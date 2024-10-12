@@ -140,40 +140,6 @@ class UserController extends Controller
         }
     }
 
-    public function translations()
-    {
-        $translations = Translation::where('user_id', auth()->id())->paginate(10);
-        return response()->json([
-            'status' => 'success',
-            'data' => $translations,
-        ], 200);
-    }
-
-    public function translate(Translation $translation, Request $request)
-    {
-        $request->validate([
-            'translation' => 'required',
-        ]);
-        DB::beginTransaction();
-        try {
-            $translation->update([
-                'value' => $request['translation'],
-            ]);
-            DB::commit();
-            return response()->json([
-                'status' => 'success',
-                'data' => $translation,
-                'message' => __('user.translation.updated'),
-            ], 200);
-        } catch (\Exception $exception) {
-            DB::rollBack();
-            return response()->json([
-                'status' => 'error',
-                'message' => $exception->getMessage(),
-            ], 500);
-        }
-    }
-
     public function roles(User $user)
     {
         $roles = $user->Roles;

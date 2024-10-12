@@ -19,7 +19,7 @@
     <form action="{{ route('cities.update', $city) }}" method="post">
         @csrf
         @method('PATCH')
-        <div class="grid gap-6 mb-6 md:grid-cols-2">
+        <div class="grid gap-6 mb-6 md:grid-cols-3">
             <div>
                 <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     Name

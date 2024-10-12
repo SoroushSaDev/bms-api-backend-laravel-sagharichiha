@@ -6,17 +6,22 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\TranslationController;
 use App\Http\Controllers\UserController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Support\Facades\Route;
+
+//require __DIR__.'/auth.php';
 
 Route::get('/', function () {
     $route = auth()->check() ? route('devices.index') : route('login');
     return redirect($route);
 });
-
 Route::get('/login', [HomeController::class, 'login'])->name('login');
 Route::middleware('auth')->group(function () {
+    Route::get('/home', function () {
+        return view('dashboard');
+    })->name('dashboard');
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
     Route::prefix('/cities')->name('cities.')->group(function () {
         Route::get('/', [CityController::class, 'index'])->name('index');
@@ -51,13 +56,12 @@ Route::middleware('auth')->group(function () {
         Route::get('/{user:id}/edit', [UserController::class, 'edit'])->name('edit');
         Route::patch('/{user:id}', [UserController::class, 'update'])->name('update');
         Route::delete('/{user:id}', [UserController::class, 'destroy'])->name('destroy');
-//        Route::get('/translations', [UserController::class, 'translations'])->name('translations');
-//        Route::post('/translations/{translation:id}/translate', [UserController::class, 'translate'])->name('translate');
         Route::middleware(AdminMiddleware::class)->group(function () {
             Route::get('/{user:id}/roles', [UserController::class, 'roles'])->name('roles');
             Route::post('/{user:id}/set', [UserController::class, 'set'])->name('set');
         });
     });
+    Route::resource('translations', TranslationController::class);
 //    Route::prefix('/registers')->name('registers.')->group(function () {
 //        Route::get('/', [RegisterController::class, 'index'])->name('index');
 //        Route::post('/', [RegisterController::class, 'store'])->name('store');
@@ -86,5 +90,3 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
-
-//require __DIR__.'/auth.php';
