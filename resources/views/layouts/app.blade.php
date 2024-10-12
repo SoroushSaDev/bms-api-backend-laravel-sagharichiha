@@ -17,8 +17,8 @@
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 <div id="app">
     @include('partial.sidebar')
-    <div class="p-4 sm:ml-64">
-        <main class="p-5 bg-gray-200 dark:bg-gray-800 mt-5 rounded">
+    <div class="sm:ml-64">
+        <main class="p-5 bg-gray-200 dark:bg-gray-800 rounded mt-5 mx-5">
             @yield('content')
         </main>
     </div>

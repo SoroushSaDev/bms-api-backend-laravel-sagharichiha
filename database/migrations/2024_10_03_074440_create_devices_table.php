@@ -22,6 +22,7 @@ return new class extends Migration {
             $table->string('wifi')->nullable();
             $table->integer('parent_id')->default(0);
             $table->integer('project_id')->default(0);
+            $table->string('mqtt_topic');
             $table->softDeletes();
             $table->timestamps();
         });

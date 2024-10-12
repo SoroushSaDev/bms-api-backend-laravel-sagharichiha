@@ -23,6 +23,12 @@ class Role extends Model
         return $this->belongsToMany(User::class, 'role_user');
     }
 
+    public function HasPermission($permission): bool
+    {
+        $field = is_numeric($permission) ? 'id' : 'name';
+        return in_array($permission, $this->Permissions->pluck($field)->toArray());
+    }
+
     public function Translate(): void
     {
         foreach ($this->Permissions as $permission) {

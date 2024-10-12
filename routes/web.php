@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\CityController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\HomeController;
@@ -17,13 +18,15 @@ Route::get('/', function () {
 Route::get('/login', [HomeController::class, 'login'])->name('login');
 Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy'])->name('logout');
-//    Route::prefix('/cities')->name('cities.')->group(function () {
-//        Route::get('/', [CityController::class, 'index'])->name('index');
-//        Route::post('/', [CityController::class, 'store'])->name('store');
-//        Route::get('/{city:id}', [CityController::class, 'show'])->name('show');
-//        Route::patch('/{city:id}', [CityController::class, 'update'])->name('update');
-//        Route::delete('/{city:id}', [CityController::class, 'destroy'])->name('destroy');
-//    });
+    Route::prefix('/cities')->name('cities.')->group(function () {
+        Route::get('/', [CityController::class, 'index'])->name('index');
+        Route::post('/', [CityController::class, 'store'])->name('store');
+        Route::get('/create', [CityController::class, 'create'])->name('create');
+        Route::get('/{city:id}', [CityController::class, 'show'])->name('show');
+        Route::get('/{city:id}/edit', [CityController::class, 'edit'])->name('edit');
+        Route::patch('/{city:id}', [CityController::class, 'update'])->name('update');
+        Route::delete('/{city:id}', [CityController::class, 'destroy'])->name('destroy');
+    });
     Route::prefix('/devices')->name('devices.')->group(function () {
         Route::get('/', [DeviceController::class, 'index'])->name('index');
         Route::post('/', [DeviceController::class, 'store'])->name('store');

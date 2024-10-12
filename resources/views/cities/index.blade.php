@@ -1,6 +1,6 @@
 @php
     use Carbon\Carbon;
-    $title = __('Roles');
+    $title = __('Cities');
 @endphp
 @extends('layouts.app')
 @section('title', $title)
@@ -10,9 +10,9 @@
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
             {{ $title }}
         </h2>
-        <a href="{{ route('roles.create') }}"
+        <a href="{{ route('cities.create') }}"
            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Add Role
+            Add City
         </a>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
@@ -26,7 +26,7 @@
                     Name
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Permissions Count
+                    Country
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -40,33 +40,33 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($roles as $key => $role)
+            @forelse($cities as $key => $city)
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td class="px-6 py-4">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $role->name }}
+                        {{ $city->name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $role->Permissions->count() }}
+                        {{ $city->Country->name }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($role->created_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($city->created_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($role->updated_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($city->updated_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4 flex">
-                        <a href="{{ route('roles.show', $role) }}"
+                        <a href="{{ route('cities.show', $city) }}"
                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Show
                         </a>
-                        <a href="{{ route('roles.edit', $role) }}"
+                        <a href="{{ route('cities.edit', $city) }}"
                            class="ml-5 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
                             Edit
                         </a>
-                        <form action="{{ route('roles.destroy', $role) }}" method="post">
+                        <form action="{{ route('cities.destroy', $city) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit"

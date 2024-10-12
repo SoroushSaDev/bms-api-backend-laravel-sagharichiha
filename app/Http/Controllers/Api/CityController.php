@@ -99,7 +99,7 @@ class CityController extends Controller
 
     public function destroy(City $city): JsonResponse
     {
-        if (!City::Can('delete'))
+        if (!City::CanDelete())
             return response()->json([
                 'status' => 'error',
                 'message' => __('auth.403'),
