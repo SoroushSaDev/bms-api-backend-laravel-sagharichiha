@@ -1,17 +1,21 @@
 @php
     use Carbon\Carbon;
+    $title = $device->name . ' ' . __('Registers');
 @endphp
 @extends('layouts.app')
-@section('title', __('Devices'))
+@section('title', $title)
 @section('content')
     <div class="flex justify-between items-center">
-        <div></div>
+        <a href="{{ route('devices.index') }}"
+           class="text-white bg-gray-700 hover:bg-gray-800 focus:ring-4 focus:outline-none focus:ring-gray-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-gray-600 dark:hover:bg-gray-700 dark:focus:ring-gray-800">
+            Back
+        </a>
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
-            {{ __('Devices') }}
+            {{ $title }}
         </h2>
-        <a href="{{ route('devices.create') }}"
+        <a href="{{ route('registers.create', $device) }}"
            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            Add Device
+            Add Register
         </a>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
@@ -22,25 +26,16 @@
                     #
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    User
+                    Title
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Name
+                    Value
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Unit
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Type
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Brand
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Model
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    LAN
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    WiFi
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -54,48 +49,39 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($devices as $key => $device)
+            @forelse($registers as $key => $register)
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td class="px-6 py-4">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->User?->name ?? '---' }}
+                        {{ $register->title }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->name }}
+                        {{ $register->value ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->type ?? '---' }}
+                        {{ $register->unit ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->brand ?? '---' }}
+                        {{ $register->type ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->model ?? '---' }}
+                        {{ Carbon::parse($register->created_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $device->lan ?? '---' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $device->wifi ?? '---' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ Carbon::parse($device->created_at)->format('Y/m/d | H:m:i') }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ Carbon::parse($device->updated_at)->format('Y/m/d | H:m:i') }}
+                        {{ Carbon::parse($register->updated_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4 flex">
-                        <a href="{{ route('devices.show', $device) }}"
+                        <a href="{{ route('registers.show', [$device, $register]) }}"
                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Show
                         </a>
-                        <a href="{{ route('devices.edit', $device) }}"
+                        <a href="{{ route('registers.edit', [$device, $register]) }}"
                            class="ml-5 text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
                             Edit
                         </a>
-                        <form action="{{ route('devices.destroy', $device) }}" method="post">
+                        <form action="{{ route('registers.destroy', [$device, $register]) }}" method="post">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
@@ -103,15 +89,11 @@
                                 Remove
                             </button>
                         </form>
-                        <a href="{{ route('registers.index', $device) . '?device_id=' . $device->id }}"
-                            class="ml-5 text-white bg-purple-700 hover:bg-purple-800 focus:ring-4 focus:outline-none focus:ring-purple-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-800">
-                            Registers
-                        </a>
                     </td>
                 </tr>
             @empty
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td colspan="11" class="px-6 py-4">
+                    <td colspan="8" class="px-6 py-4">
                         No Records
                     </td>
                 </tr>

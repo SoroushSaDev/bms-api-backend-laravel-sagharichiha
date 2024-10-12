@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Profile;
+use App\Models\Role;
 use App\Models\Translation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -23,8 +24,9 @@ class UserController extends Controller
 
     public function create()
     {
+        $roles = Role::all();
         $languages = Translation::Languages;
-        return view('users.create', compact('languages'));
+        return view('users.create', compact('languages', 'roles'));
     }
 
     public function store(Request $request)
@@ -43,6 +45,7 @@ class UserController extends Controller
                 'last_name' => 'nullable|max:255',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
+                'roles' => 'nullable|exists:roles,id',
             ]);
             $user = new User();
             $user->parent_id = $parentId;
@@ -60,6 +63,8 @@ class UserController extends Controller
             $profile->address = $request->has('address') ? $request['address'] : null;
             $profile->language = $request->has('language') ? $request['language'] : null;
             $profile->save();
+            if ($request->has('roles'))
+                $user->Roles()->sync($request['roles']);
             DB::commit();
             return redirect(route('users.index'));
         } catch (\Exception $exception) {
@@ -76,8 +81,9 @@ class UserController extends Controller
 
     public function edit(User $user)
     {
+        $roles = Role::all();
         $languages = Translation::Languages;
-        return view('users.edit', compact('user', 'languages'));
+        return view('users.edit', compact('user', 'languages', 'roles'));
     }
 
     public function update(User $user, Request $request)
@@ -94,6 +100,7 @@ class UserController extends Controller
                 'gender' => 'nullable|in:male,female',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
+                'roles' => 'nullable|exists:roles,id',
             ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['name'];
@@ -117,6 +124,8 @@ class UserController extends Controller
             $profile->address = $request->has('address') ? $request['address'] : $profile->address;
             $profile->language = $request->has('language') ? $request['language'] : $profile->language;
             $profile->save();
+            if ($request->has('roles'))
+                $user->Roles()->sync($request['roles']);
             DB::commit();
             $user->Profile->Translate();
             return redirect(route('users.index'));

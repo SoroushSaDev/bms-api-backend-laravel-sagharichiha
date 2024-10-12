@@ -56,29 +56,14 @@
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('translations.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'translations.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
-                        <svg
-                            class="flex-shrink-0 w-5 h-5 {{ $routeName == 'translations.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 18 18">
-                            <path
-                                d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
-                        </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">
-                        {{ __('Translations') }}
-                    </span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{ route('devices.index') }}"
                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'devices.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
-                        <svg
-                            class="flex-shrink-0 w-5 h-5 {{ $routeName == 'devices.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 18 18">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-cpu-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'devices.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                             viewBox="0 0 16 16">
+                            <path d="M6.5 6a.5.5 0 0 0-.5.5v3a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5v-3a.5.5 0 0 0-.5-.5z"/>
                             <path
-                                d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                                d="M5.5.5a.5.5 0 0 0-1 0V2A2.5 2.5 0 0 0 2 4.5H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2v1H.5a.5.5 0 0 0 0 1H2A2.5 2.5 0 0 0 4.5 14v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14h1v1.5a.5.5 0 0 0 1 0V14a2.5 2.5 0 0 0 2.5-2.5h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14v-1h1.5a.5.5 0 0 0 0-1H14A2.5 2.5 0 0 0 11.5 2V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1V.5a.5.5 0 0 0-1 0V2h-1zm1 4.5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5v-3A1.5 1.5 0 0 1 6.5 5"/>
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">
                         {{ __('Devices') }}
@@ -88,12 +73,11 @@
                 <li>
                     <a href="{{ route('cities.index') }}"
                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'cities.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
-                        <svg
-                            class="flex-shrink-0 w-5 h-5 {{ $routeName == 'cities.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 18 18">
-                            <path
-                                d="M6.143 0H1.857A1.857 1.857 0 0 0 0 1.857v4.286C0 7.169.831 8 1.857 8h4.286A1.857 1.857 0 0 0 8 6.143V1.857A1.857 1.857 0 0 0 6.143 0Zm10 0h-4.286A1.857 1.857 0 0 0 10 1.857v4.286C10 7.169 10.831 8 11.857 8h4.286A1.857 1.857 0 0 0 18 6.143V1.857A1.857 1.857 0 0 0 16.143 0Zm-10 10H1.857A1.857 1.857 0 0 0 0 11.857v4.286C0 17.169.831 18 1.857 18h4.286A1.857 1.857 0 0 0 8 16.143v-4.286A1.857 1.857 0 0 0 6.143 10Zm10 0h-4.286A1.857 1.857 0 0 0 10 11.857v4.286c0 1.026.831 1.857 1.857 1.857h4.286A1.857 1.857 0 0 0 18 16.143v-4.286A1.857 1.857 0 0 0 16.143 10Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-map-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'cities.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                             viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="M16 .5a.5.5 0 0 0-.598-.49L10.5.99 5.598.01a.5.5 0 0 0-.196 0l-5 1A.5.5 0 0 0 0 1.5v14a.5.5 0 0 0 .598.49l4.902-.98 4.902.98a.5.5 0 0 0 .196 0l5-1A.5.5 0 0 0 16 14.5zM5 14.09V1.11l.5-.1.5.1v12.98l-.402-.08a.5.5 0 0 0-.196 0zm5 .8V1.91l.402.08a.5.5 0 0 0 .196 0L11 1.91v12.98l-.5.1z"/>
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">
                         {{ __('Cities') }}
@@ -114,29 +98,43 @@
                     </a>
                 </li>
                 <li>
+                    <a href="{{ route('roles.index') }}"
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'roles.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-person-lines-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'roles.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                             viewBox="0 0 16 16">
+                            <path
+                                d="M6 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6m-5 6s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1zM11 3.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5m.5 2.5a.5.5 0 0 0 0 1h4a.5.5 0 0 0 0-1zm2 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1zm0 3a.5.5 0 0 0 0 1h2a.5.5 0 0 0 0-1z"/>
+                        </svg>
+                        <span class="flex-1 ms-3 whitespace-nowrap">Roles</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('permissions.index') }}"
                        class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'permissions.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
-                        <svg
-                            class="flex-shrink-0 w-5 h-5 {{ $routeName == 'permissions.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 18">
-                            <path
-                                d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-shield-lock-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'permissions.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                             viewBox="0 0 16 16">
+                            <path fill-rule="evenodd"
+                                  d="M8 0c-.69 0-1.843.265-2.928.56-1.11.3-2.229.655-2.887.87a1.54 1.54 0 0 0-1.044 1.262c-.596 4.477.787 7.795 2.465 9.99a11.8 11.8 0 0 0 2.517 2.453c.386.273.744.482 1.048.625.28.132.581.24.829.24s.548-.108.829-.24a7 7 0 0 0 1.048-.625 11.8 11.8 0 0 0 2.517-2.453c1.678-2.195 3.061-5.513 2.465-9.99a1.54 1.54 0 0 0-1.044-1.263 63 63 0 0 0-2.887-.87C9.843.266 8.69 0 8 0m0 5a1.5 1.5 0 0 1 .5 2.915l.385 1.99a.5.5 0 0 1-.491.595h-.788a.5.5 0 0 1-.49-.595l.384-1.99A1.5 1.5 0 0 1 8 5"/>
                         </svg>
                         <span class="flex-1 ms-3 whitespace-nowrap">Permissions</span>
                     </a>
                 </li>
                 <li>
-                    <a href="{{ route('roles.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'roles.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
-                        <svg
-                            class="flex-shrink-0 w-5 h-5 {{ $routeName == 'roles.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 20 18">
+                    <a href="{{ route('translations.index') }}"
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'translations.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                             class="bi bi-translate flex-shrink-0 w-5 h-5 {{ $routeName == 'translations.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
+                             viewBox="0 0 16 16">
                             <path
-                                d="M14 2a3.963 3.963 0 0 0-1.4.267 6.439 6.439 0 0 1-1.331 6.638A4 4 0 1 0 14 2Zm1 9h-1.264A6.957 6.957 0 0 1 15 15v2a2.97 2.97 0 0 1-.184 1H19a1 1 0 0 0 1-1v-1a5.006 5.006 0 0 0-5-5ZM6.5 9a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9ZM8 10H5a5.006 5.006 0 0 0-5 5v2a1 1 0 0 0 1 1h11a1 1 0 0 0 1-1v-2a5.006 5.006 0 0 0-5-5Z"/>
+                                d="M4.545 6.714 4.11 8H3l1.862-5h1.284L8 8H6.833l-.435-1.286zm1.634-.736L5.5 3.956h-.049l-.679 2.022z"/>
+                            <path
+                                d="M0 2a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2v3h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2v-3H2a2 2 0 0 1-2-2zm2-1a1 1 0 0 0-1 1v7a1 1 0 0 0 1 1h7a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zm7.138 9.995q.289.451.63.846c-.748.575-1.673 1.001-2.768 1.292.178.217.451.635.555.867 1.125-.359 2.08-.844 2.886-1.494.777.665 1.739 1.165 2.93 1.472.133-.254.414-.673.629-.89-1.125-.253-2.057-.694-2.82-1.284.681-.747 1.222-1.651 1.621-2.757H14V8h-3v1.047h.765c-.318.844-.74 1.546-1.272 2.13a6 6 0 0 1-.415-.492 2 2 0 0 1-.94.31"/>
                         </svg>
-                        <span class="flex-1 ms-3 whitespace-nowrap">Roles</span>
+                        <span class="flex-1 ms-3 whitespace-nowrap">
+                        {{ __('Translations') }}
+                    </span>
                     </a>
                 </li>
                 <li>

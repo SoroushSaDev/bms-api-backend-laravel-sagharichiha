@@ -113,13 +113,28 @@
                        value="{{ $user->Profile?->birthday }}"/>
             </div>
         </div>
-        <div class="mb-6">
-            <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-                Address
-            </label>
-            <textarea id="address" name="address"
-                      class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                      rows="4">{{ $user->Profile?->address }}</textarea>
+        <div class="grid gap-6 mb-6 md:grid-cols-2">
+            <div>
+                <label for="address" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Address
+                </label>
+                <textarea id="address" name="address"
+                          class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                          rows="4">{{ $user->Profile?->address }}</textarea>
+            </div>
+            <div>
+                <label for="roles" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Roles
+                </label>
+                <select multiple id="roles" name="roles[]"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    @foreach($roles as $role)
+                        <option value="{{ $role->id }}" @selected($user->HasRole($role->name))>
+                            {{ $role->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
         </div>
         <hr class="my-5 border-gray-300 dark:border-gray-700">
         <button type="submit"

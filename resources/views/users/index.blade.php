@@ -35,16 +35,10 @@
                     Type
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    First Name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Last Name
-                </th>
-                <th scope="col" class="px-6 py-3">
-                    Gender
-                </th>
-                <th scope="col" class="px-6 py-3">
                     Parent
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Roles Count
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -76,16 +70,10 @@
                         {{ $user->type ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $user->Profile?->first_name ?? '---' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $user->Profile?->last_name ?? '---' }}
-                    </td>
-                    <td class="px-6 py-4">
-                        {{ $user->Profile?->gender ?? '---' }}
-                    </td>
-                    <td class="px-6 py-4">
                         {{ $user->Parent?->name ?? '---' }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ $user->Roles?->count() ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
                         {{ Carbon::parse($user->created_at)->format('Y/m/d | H:m:i') }}
@@ -94,10 +82,6 @@
                         {{ Carbon::parse($user->updated_at)->format('Y/m/d | H:m:i') }}
                     </td>
                     <td class="px-6 py-4 flex">
-                        {{--                        <a href="{{ route('registers.index') . '?device_id=' . $device->id }}"--}}
-                        {{--                           class="hover:underline hover:text-blue-500">--}}
-                        {{--                            Registers--}}
-                        {{--                        </a>--}}
                         <a href="{{ route('users.show', $user) }}"
                            class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
                             Show
@@ -118,7 +102,7 @@
                 </tr>
             @empty
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td colspan="10" class="px-6 py-4">
+                    <td colspan="8" class="px-6 py-4">
                         No Records
                     </td>
                 </tr>
