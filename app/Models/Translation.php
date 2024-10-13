@@ -23,8 +23,9 @@ class Translation extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function GetLanguage(): string
+    public function GetLanguage($translate = true): string
     {
-        return self::Languages[$this->lang];
+        $lang = self::Languages[$this->lang];
+        return $translate ? translate($lang) : $lang;
     }
 }

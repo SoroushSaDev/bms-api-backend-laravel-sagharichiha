@@ -28,7 +28,7 @@
             @guest
                 <li>
                     <a href="{{ route('login') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'login' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'login' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg
                             class="flex-shrink-0 w-5 h-5 {{ $routeName == 'login' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
@@ -42,7 +42,7 @@
             @if(auth()->check())
                 <li>
                     <a href="{{ route('dashboard') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'dashboard' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'dashboard' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg
                             class="flex-shrink-0 w-5 h-5 {{ $routeName == 'dashboard' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -57,7 +57,7 @@
                 </li>
                 <li>
                     <a href="{{ route('projects.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'projects.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'projects.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-briefcase-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'projects.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -73,7 +73,7 @@
                 </li>
                 <li>
                     <a href="{{ route('devices.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'devices.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'devices.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-cpu-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'devices.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -88,7 +88,7 @@
                 </li>
                 <li>
                     <a href="{{ route('cities.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'cities.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'cities.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-map-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'cities.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -102,7 +102,7 @@
                 </li>
                 <li>
                     <a href="{{ route('users.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'users.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'users.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg
                             class="flex-shrink-0 w-5 h-5 {{ $routeName == 'users.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                             aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
@@ -115,7 +115,7 @@
                 </li>
                 <li>
                     <a href="{{ route('roles.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'roles.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'roles.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-person-lines-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'roles.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -127,7 +127,7 @@
                 </li>
                 <li>
                     <a href="{{ route('permissions.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'permissions.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'permissions.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-shield-lock-fill flex-shrink-0 w-5 h-5 {{ $routeName == 'permissions.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -139,7 +139,7 @@
                 </li>
                 <li>
                     <a href="{{ route('translations.index') }}"
-                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'translations.index' ? 'bg-blue-500 hover:bg-blue-800' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
+                       class="flex items-center p-2 text-gray-900 rounded-lg dark:text-gray-100 {{ $routeName == 'translations.index' ? 'bg-blue-500 hover:bg-blue-600' : 'hover:bg-gray-100 dark:hover:bg-gray-700' }} group">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                              class="bi bi-translate flex-shrink-0 w-5 h-5 {{ $routeName == 'translations.index' ? 'text-gray-900 dark:text-gray-100' : 'text-gray-500 dark:text-gray-400' }} transition duration-75 group-hover:text-gray-900 dark:group-hover:text-white"
                              viewBox="0 0 16 16">
@@ -156,17 +156,18 @@
                 <li>
                     <form action="{{ route('logout') }}" method="post">
                         @csrf
-                        <button type="submit"
-                                class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-red-100 dark:hover:bg-red-700 group">
-                            <svg
-                                class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
-                                aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                      stroke-width="2"
-                                      d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
-                            </svg>
-                            <span class="flex-1 ms-3 whitespace-nowrap">Logout</span>
-                        </button>
+                        <a class="flex items-center p-2 text-gray-900 rounded-lg dark:text-white hover:bg-red-100 dark:hover:bg-red-700 group">
+                            <button type="submit" class="w-full flex items-center">
+                                <svg
+                                    class="flex-shrink-0 w-5 h-5 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white"
+                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 18 16">
+                                    <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                          stroke-width="2"
+                                          d="M1 8h11m0 0L8 4m4 4-4 4m4-11h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"/>
+                                </svg>
+                                <span class="ms-3 whitespace-nowrap">Logout</span>
+                            </button>
+                        </a>
                     </form>
                 </li>
             @endif

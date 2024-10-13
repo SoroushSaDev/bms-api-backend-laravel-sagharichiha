@@ -48,12 +48,39 @@ class Device extends Model
 
     public function SendToClient(): void
     {
-        Http::post(env('API_URL') . 'devices', [
+        $response = Http::post(env('API_URL') . 'devices', [
             'name' => $this->name,
             'topic' => $this->mqtt_topic,
             'token' => env('API_TOKEN'),
             'description' => $this->description,
         ]);
+        $data = $response->json()['data'];
+        $this->server_id = $data['id'];
+        $this->save();
+//        foreach ($this->Registers as $register) {
+//            Http::post(env('API_URL') . 'registers', [
+//                'key' => $register->key,
+//                'type' => $register->type,
+//                'device_id' => $data['id'],
+//                'title' => $register->title,
+//                'value' => $register->value,
+//                'token' => env('API_TOKEN'),
+//            ]);
+//        }
+    }
+
+    public function UpdateRegisters(): void
+    {
+        $response = Http::get(env('API_URL') . 'registers', [
+            'device_id' => $this->server_id,
+            'token' => env('API_TOKEN'),
+        ]);
+        $registers = $response->json()['data'];
+        foreach ($registers as $register) {
+            Register::where('key', $register['key'])->first()->update([
+                'value' => $register['value'],
+            ]);
+        }
     }
 
     public function Translate(): void

@@ -8,11 +8,13 @@ use App\Models\Register;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
     public function index(Device $device)
     {
+        $device->UpdateRegisters();
         $registers = $device->Registers;
         $registers->map(function ($register) {
             $register->Translate();

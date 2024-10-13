@@ -16,6 +16,7 @@ return new class extends Migration {
             $table->uuid('device_id');
             $table->integer('parent_id')->default(0);
             $table->string('title');
+            $table->string('key')->nullable();
             $table->string('value')->nullable();
             $table->string('unit')->nullable();
             $table->string('type')->nullable();

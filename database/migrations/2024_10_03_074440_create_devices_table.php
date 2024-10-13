@@ -23,6 +23,7 @@ return new class extends Migration {
             $table->integer('parent_id')->default(0);
             $table->integer('project_id')->default(0);
             $table->string('mqtt_topic');
+            $table->string('server_id')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
