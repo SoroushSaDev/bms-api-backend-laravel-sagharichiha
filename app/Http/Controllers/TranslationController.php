@@ -10,7 +10,7 @@ class TranslationController extends Controller
 {
     public function index()
     {
-        $translations = Translation::all();
+        $translations = Translation::paginate(10);
         return view('translations.index', compact('translations'));
     }
 

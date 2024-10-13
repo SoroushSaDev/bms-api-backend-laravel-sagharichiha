@@ -15,7 +15,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::all();
+        $projects = Project::paginate(10);
         $projects->map(function (Project $project) {
             $project->Translate();
         });

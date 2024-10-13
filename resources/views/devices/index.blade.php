@@ -147,4 +147,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $devices])
 @endsection

@@ -119,4 +119,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $projects])
 @endsection

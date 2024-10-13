@@ -19,7 +19,7 @@ class DeviceController extends Controller
             $query->where('parent_id', 0);
         })->when($request->has('type'), function ($query) use ($request) {
             $query->where('type', $request['type']);
-        })->get();
+        })->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
         });
@@ -43,7 +43,7 @@ class DeviceController extends Controller
             $device->description = $request->has('description') ? $request['description'] : null;
             $device->lan = $request->has('lan') ? $request['lan'] : null;
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
-            $device->mqtt_topic = 'METARIOM/' . str_replace(' ', '_', $device->name);
+            $device->mqtt_topic = $request->has('topic') ? $request['topic'] : 'METARIOM/' . str_replace(' ', '_', $device->name);
             $device->save();
             $device->SendToClient();
             DB::commit();
@@ -76,6 +76,7 @@ class DeviceController extends Controller
             $device->description = $request->has('description') ? $request['description'] : $device->description;
             $device->lan = $request->has('lan') ? $request['lan'] : $device->lan;
             $device->wifi = $request->has('type') ? $request['wifi'] : $device->wifi;
+            $device->mqtt_topic = $request->has('topic') ? $request['topic'] : 'METARIOM/' . str_replace(' ', '_', $device->name);
             $device->save();
             DB::commit();
             return redirect(route('devices.index'));

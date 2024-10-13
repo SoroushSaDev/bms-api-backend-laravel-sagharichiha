@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
             $query->where('parent_id', $request['parent_id']);
-        })->get();
+        })->paginate(10);
         return view('users.index', compact('users'));
     }
 

@@ -103,4 +103,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $permissions])
 @endsection

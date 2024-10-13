@@ -18,7 +18,7 @@
 <div id="app">
     @include('partial.sidebar')
     <div class="sm:ml-64">
-        <main class="p-5 bg-gray-200 dark:bg-gray-800 rounded mt-5 mx-5">
+        <main class="p-5 bg-gray-200 dark:bg-gray-800 rounded m-5">
             @yield('content')
         </main>
     </div>

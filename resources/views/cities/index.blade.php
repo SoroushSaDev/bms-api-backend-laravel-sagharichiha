@@ -107,4 +107,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $cities])
 @endsection

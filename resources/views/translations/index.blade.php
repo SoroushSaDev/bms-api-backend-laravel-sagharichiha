@@ -115,4 +115,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $translations])
 @endsection

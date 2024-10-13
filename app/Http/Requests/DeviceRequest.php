@@ -25,13 +25,14 @@ class DeviceRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'lan' => 'nullable',
+            'wifi' => 'nullable',
             'name' => 'required',
             'type' => 'nullable',
             'brand' => 'nullable',
             'model' => 'nullable',
+            'topic' => 'nullable',
             'description' => 'nullable',
-            'lan' => 'nullable',
-            'wifi' => 'nullable',
         ];
     }
 

@@ -131,4 +131,5 @@
             </tbody>
         </table>
     </div>
+    @include('partial.pagination', ['items' => $users])
 @endsection

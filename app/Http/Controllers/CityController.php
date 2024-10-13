@@ -17,7 +17,7 @@ class CityController extends Controller
             abort(403);
         $cities = City::with('Country')->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
-        })->get();
+        })->paginate(10);
         $cities->map(function (City $city) {
             $city->Translate();
         });

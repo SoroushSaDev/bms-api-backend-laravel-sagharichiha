@@ -63,6 +63,14 @@
         </div>
         <div class="grid gap-6 mb-6 md:grid-cols-4">
             <div>
+                <label for="topic" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+                    Topic
+                </label>
+                <input type="text" id="topic" name="topic"
+                       class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                />
+            </div>
+            <div>
                 <label for="lan" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                     LAN
                 </label>
