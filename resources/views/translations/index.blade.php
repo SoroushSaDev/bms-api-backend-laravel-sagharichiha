@@ -6,18 +6,20 @@
 @section('title', $title)
 @section('content')
     <div class="flex justify-between items-center">
-        <div></div>
+        <div class="hidden sm:block"></div>
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
             {{ $title }}
         </h2>
         <a href="{{ route('translations.create') }}"
-           class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+           class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                 class="bi bi-plus-circle-fill mr-2" viewBox="0 0 16 16">
+                 class="bi bi-plus-circle-fill sm:mr-2" viewBox="0 0 16 16">
                 <path
                     d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
             </svg>
-            Add Translation
+            <span class="hidden sm:block">
+                Add Translation
+            </span>
         </a>
     </div>
     <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">

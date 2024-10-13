@@ -5,12 +5,12 @@
 @section('title', __('Devices'))
 @section('content')
     <div class="flex justify-between items-center">
-        <div></div>
+        <div class="hidden sm:block"></div>
         <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
             {{ __('Devices') }}
         </h2>
         <a href="{{ route('devices.create') }}"
-           class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+           class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                  class="bi bi-plus-circle-fill mr-2" viewBox="0 0 16 16">
                 <path

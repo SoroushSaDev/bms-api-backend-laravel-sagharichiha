@@ -1,37 +1,23 @@
 @php
     use Carbon\Carbon;
-    $title = __('Roles');
 @endphp
-@extends('layouts.app')
-@section('title', $title)
-@section('content')
-    <div class="flex justify-between items-center">
-        <div class="hidden sm:block"></div>
-        <h2 class="text-gray-900 dark:text-gray-100 text-3xl">
-            {{ $title }}
-        </h2>
-        <a href="{{ route('roles.create') }}"
-           class="flex items-center text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
-                 class="bi bi-plus-circle-fill mr-2" viewBox="0 0 16 16">
-                <path
-                    d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3z"/>
-            </svg>
-            Add Role
-        </a>
-    </div>
-    <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
-        <table class="w-full text-sm text-left rtl:text-right text-gray-900 dark:text-gray-100">
+<table id="data" class="w-full text-sm text-left rtl:text-right text-gray-900 dark:text-gray-100">
             <thead class="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
             <tr>
                 <th scope="col" class="px-6 py-3">
                     #
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Name
+                    Title
                 </th>
                 <th scope="col" class="px-6 py-3">
-                    Permissions Count
+                    Value
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Unit
+                </th>
+                <th scope="col" class="px-6 py-3">
+                    Type
                 </th>
                 <th scope="col" class="px-6 py-3">
                     Created At
@@ -45,25 +31,31 @@
             </tr>
             </thead>
             <tbody>
-            @forelse($roles as $key => $role)
+            @forelse($registers as $key => $register)
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
                     <td class="px-6 py-4">
                         {{ $key + 1 }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $role->name }}
+                        {{ $register->title }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ $role->Permissions->count() }}
+                        {{ $register->value ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($role->created_at)->format('Y/m/d | H:m:i') }}
+                        {{ $register->unit ?? '---' }}
                     </td>
                     <td class="px-6 py-4">
-                        {{ Carbon::parse($role->updated_at)->format('Y/m/d | H:m:i') }}
+                        {{ $register->type ?? '---' }}
                     </td>
-                    <td class="px-6 py-4 flex">
-                        <a href="{{ route('roles.show', $role) }}"
+                    <td class="px-6 py-4">
+                        {{ Carbon::parse($register->created_at)->format('Y/m/d | H:m:i') }}
+                    </td>
+                    <td class="px-6 py-4">
+                        {{ Carbon::parse($register->updated_at)->format('Y/m/d | H:m:i') }}
+                    </td>
+                    <td class="px-6 py-4 flex items-center">
+                        <a href="{{ route('registers.show', [$register]) }}"
                            class="flex items-center text-white bg-yellow-700 hover:bg-yellow-800 focus:ring-4 focus:outline-none focus:ring-yellow-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-yellow-600 dark:hover:bg-yellow-700 dark:focus:ring-yellow-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-eye-fill mr-2" viewBox="0 0 16 16">
@@ -73,7 +65,7 @@
                             </svg>
                             Show
                         </a>
-                        <a href="{{ route('roles.edit', $role) }}"
+                        <a href="{{ route('registers.edit', [$register]) }}"
                            class="ml-5 flex items-center text-white bg-orange-700 hover:bg-orange-800 focus:ring-4 focus:outline-none focus:ring-orange-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-orange-600 dark:hover:bg-orange-700 dark:focus:ring-orange-800">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                                  class="bi bi-pencil-fill mr-2" viewBox="0 0 16 16">
@@ -82,7 +74,7 @@
                             </svg>
                             Edit
                         </a>
-                        <form action="{{ route('roles.destroy', $role) }}" method="post">
+                        <form action="{{ route('registers.destroy', [$register]) }}" method="post" class="m-0">
                             @csrf
                             @method('DELETE')
                             <button type="submit"
@@ -99,12 +91,10 @@
                 </tr>
             @empty
                 <tr class="odd:bg-dar-gray-100 odd:dark:bg-gray-900 even:bg-gray-50 even:dark:bg-gray-800 border-b dark:border-gray-700">
-                    <td colspan="6" class="px-6 py-4">
+                    <td colspan="8" class="px-6 py-4">
                         No Records
                     </td>
                 </tr>
             @endforelse
             </tbody>
         </table>
-    </div>
-@endsection

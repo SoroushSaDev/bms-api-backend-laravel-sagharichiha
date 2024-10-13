@@ -17,7 +17,7 @@
 <aside id="default-sidebar"
        class="fixed top-0 left-0 z-40 w-64 h-screen transition-transform -translate-x-full sm:translate-x-0"
        aria-label="Sidebar">
-    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 ml-5 mt-5 rounded">
+    <div class="h-full px-3 py-4 overflow-y-auto bg-gray-50 dark:bg-gray-800 sm:ml-5 sm:mt-5 rounded">
         <p class="flex items-center ps-2.5">
             <span class="self-center text-xl font-semibold whitespace-nowrap dark:text-white">
                 Behin Start

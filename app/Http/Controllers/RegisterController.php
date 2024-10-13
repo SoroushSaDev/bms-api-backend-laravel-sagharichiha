@@ -12,14 +12,16 @@ use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
-    public function index(Device $device)
+    public function index(Device $device, Request $request)
     {
         $device->UpdateRegisters();
         $registers = $device->Registers;
         $registers->map(function ($register) {
             $register->Translate();
         });
-        return view('registers.index', compact('device', 'registers'));
+        return $request->ajax()
+            ? view('registers.partial.table', compact('registers'))
+            : view('registers.index', compact('device', 'registers'));
     }
 
     public function create(Device $device)
