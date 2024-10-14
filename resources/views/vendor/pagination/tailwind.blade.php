@@ -3,7 +3,7 @@
         <div class="flex justify-between flex-1 sm:hidden">
             @if($paginator->onFirstPage())
                 <span
-                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md dark:text-gray-600 dark:bg-gray-800 dark:border-gray-600">
+                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-100 bg-gray-300 border border-gray-300 cursor-default leading-5 rounded-md dark:text-gray-800z dark:bg-gray-600 dark:border-gray-600">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-chevron-left mr-2" viewBox="0 0 16 16">
                         <path fill-rule="evenodd"
@@ -34,7 +34,7 @@
                 </a>
             @else
                 <span
-                    class="relative inline-flex items-center px-4 py-2 ml-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 cursor-default leading-5 rounded-md dark:text-gray-600 dark:bg-gray-800 dark:border-gray-600">
+                    class="relative inline-flex items-center px-4 py-2 text-sm font-medium text-gray-100 bg-gray-300 border border-gray-300 cursor-default leading-5 rounded-md dark:text-gray-800z dark:bg-gray-600 dark:border-gray-600">
                     {!! __('pagination.next') !!}
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
                          class="bi bi-chevron-right ml-2" viewBox="0 0 16 16">
