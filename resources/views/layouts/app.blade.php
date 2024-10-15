@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+@php
+    $dir = GetDirection();
+    $ml = $dir == 'RTL' ? 'mr-' : 'ml-';
+@endphp
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" dir="{{ $dir }}">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -17,7 +21,7 @@
 <body class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
 <div id="app">
     @include('partial.sidebar')
-    <div class="sm:ml-64">
+    <div class="sm:{{ $ml }}64">
         <main class="p-5 bg-gray-200 dark:bg-gray-800 rounded m-5">
             @yield('content')
         </main>

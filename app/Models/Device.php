@@ -77,7 +77,7 @@ class Device extends Model
         ]);
         $registers = $response->json()['data'];
         foreach ($registers as $register) {
-            Register::where('key', $register['key'])->first()->update([
+            Register::where('device_id', $this->id)->where('key', $register['key'])->first()->update([
                 'value' => $register['value'],
             ]);
         }

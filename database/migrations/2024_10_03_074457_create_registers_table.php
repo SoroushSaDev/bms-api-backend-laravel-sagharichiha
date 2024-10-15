@@ -13,16 +13,16 @@ return new class extends Migration {
         Schema::create('registers', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->uuid('device_id');
+            $table->integer('device_id');
             $table->integer('parent_id')->default(0);
             $table->string('title');
             $table->string('key')->nullable();
             $table->string('value')->nullable();
             $table->string('unit')->nullable();
-            $table->string('type')->nullable();
             $table->string('scale')->nullable();
-            $table->enum('input', ['digital', 'analog', 'none'])->default('none');
-            $table->enum('output', ['digital', 'analog', 'none'])->default('none');
+            $table->enum('type', ['none', 'bool', 'int'])->default('none');
+            $table->integer('limit_from')->nullable();
+            $table->integer('limit_to')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

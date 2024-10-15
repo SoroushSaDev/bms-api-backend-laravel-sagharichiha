@@ -2,19 +2,40 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MqttMessageReceived;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Device;
 use App\Models\Register;
-use Illuminate\Http\JsonResponse;
+use App\Services\MqttService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use PhpMqtt\Client\Exceptions\ConfigurationInvalidException;
+use PhpMqtt\Client\Exceptions\ConnectingToBrokerFailedException;
+use PhpMqtt\Client\Exceptions\DataTransferException;
+use PhpMqtt\Client\Exceptions\InvalidMessageException;
+use PhpMqtt\Client\Exceptions\MqttClientException;
+use PhpMqtt\Client\Exceptions\ProtocolViolationException;
+use PhpMqtt\Client\Exceptions\RepositoryException;
 
 class RegisterController extends Controller
 {
+    /**
+     * @throws ConnectingToBrokerFailedException
+     * @throws MqttClientException
+     * @throws RepositoryException
+     * @throws ConfigurationInvalidException
+     * @throws ProtocolViolationException
+     * @throws InvalidMessageException
+     * @throws DataTransferException
+     */
     public function index(Device $device, Request $request)
     {
-        $device->UpdateRegisters();
+        $mqttService = new MqttService();
+        $mqttService->connect();
+        $mqttService->subscribe($device->mqtt_topic, function ($topic, $message) {
+            broadcast(new MqttMessageReceived($topic, $message));
+        });
+        $mqttService->loop(0);
         $registers = $device->Registers;
         $registers->map(function ($register) {
             $register->Translate();

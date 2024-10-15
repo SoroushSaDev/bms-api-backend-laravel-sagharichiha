@@ -26,12 +26,9 @@ class Register extends Model
     }
 
     const Types = [
-        'binary',
-        'integer',
-        'string',
-        'char',
-        'float',
-        'long',
+        'none' => 'None',
+        'int' => 'Integer',
+        'bool' => 'Boolean',
     ];
 
     public function Device(): BelongsTo

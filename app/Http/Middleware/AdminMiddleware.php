@@ -16,6 +16,8 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (auth()->check() && auth()->user()->type == 'admin') {
+            $local = auth()->user()->Profile?->language ?? 'en';
+            \App::setLocale($local);
             return $next($request);
         } else {
             return response()->json([
