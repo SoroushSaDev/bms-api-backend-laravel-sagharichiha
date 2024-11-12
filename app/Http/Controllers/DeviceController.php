@@ -17,8 +17,6 @@ class DeviceController extends Controller
             $query->where('user_id', auth()->id());
         })->when(auth()->user()->type == 'admin', function ($query) {
             $query->where('parent_id', 0);
-        })->when($request->has('type'), function ($query) use ($request) {
-            $query->where('type', $request['type']);
         })->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
