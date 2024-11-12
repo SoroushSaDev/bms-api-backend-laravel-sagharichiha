@@ -85,7 +85,7 @@ class Device extends Model
 
     public function Translate(): void
     {
-        TranslateAll($this, ['name', 'type', 'brand', 'model', 'description']);
+        TranslateAll($this, ['name', 'brand', 'model', 'description']);
         $this->Registers->map(function ($register) {
             $register->Translate();
         });
