@@ -19,10 +19,7 @@ class DeviceController extends Controller
         $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'type', 'brand', 'model', 'description'])
             ->when(auth()->user()->type != 'admin', function ($query) {
                 $query->where('user_id', auth()->id());
-            })
-            ->when($request->has('type'), function ($query) use ($request) {
-                $query->where('type', $request['type']);
-           })->paginate(10);
+            })->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
         });
