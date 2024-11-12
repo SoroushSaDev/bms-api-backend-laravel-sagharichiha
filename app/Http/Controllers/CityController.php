@@ -2,75 +2,79 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\CityRequest;
 use App\Models\City;
-use App\Models\Country;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class CityController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if (!City::CanShow())
-            abort(403);
-        $cities = City::with('Country')->when($request->has('country_id'), function ($query) use ($request) {
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
+        $cities = City::with('Country')->select(['id', 'name', 'country_id'])->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
         })->paginate(10);
         $cities->map(function (City $city) {
             $city->Translate();
         });
-        return view('cities.index', compact('cities'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $cities,
+        ], 200);
     }
 
-    public function create()
-    {
-        $countries = Country::all();
-        $countries->map(function (Country $country) {
-            $country->name = translate($country->en_name);
-        });
-        return view('cities.create', compact('countries'));
-    }
-
-    public function store(CityRequest $request)
+    public function store(CityRequest $request): JsonResponse
     {
         if (!City::CanCreate())
-            abort(403);
+            return response()->json([
+               'status' => 'error',
+               'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
             $city = City::create([
-                'country_id' => $request['country'],
-                'name' => $request['name'],
+               'country_id' => $request['country'],
+               'name' => $request['name'],
             ]);
             DB::commit();
             $city->Translate();
-            return redirect(route('cities.index'));
+            return response()->json([
+                'status' => 'success',
+                'data' => $city,
+                'message' => __('city.created'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
-    public function show(City $city)
+    public function show(City $city): JsonResponse
     {
         $city->Translate();
-        return view('cities.show', compact('city'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $city,
+        ], 200);
     }
 
-    public function edit(City $city)
-    {
-        $countries = Country::all();
-        $countries->map(function (Country $country) {
-            $country->name = translate($country->en_name);
-        });
-        return view('cities.edit', compact('city', 'countries'));
-    }
-
-    public function update(City $city, CityRequest $request)
+    public function update(City $city, CityRequest $request): JsonResponse
     {
         if (!$city->CanEdit())
-            abort(403);
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
             $city->update([
@@ -79,25 +83,41 @@ class CityController extends Controller
             ]);
             DB::commit();
             $city->Translate();
-            return redirect(route('cities.index'));
+            return response()->json([
+                'status' => 'success',
+                'data' => $city,
+                'message' => __('city.updated'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
-    public function destroy(City $city)
+    public function destroy(City $city): JsonResponse
     {
-        if (!$city->CanDelete())
-            abort(403);
+        if (!City::CanDelete())
+            return response()->json([
+                'status' => 'error',
+                'message' => __('auth.403'),
+            ], 403);
         DB::beginTransaction();
         try {
             $city->delete();
             DB::commit();
-            return redirect(route('cities.index'));
+            return response()->json([
+                'status' => 'success',
+                'message' => __('city.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ]);
         }
     }
 }

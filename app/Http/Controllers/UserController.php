@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use App\Models\Profile;
-use App\Models\Role;
 use App\Models\Translation;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -14,22 +14,18 @@ use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
             $query->where('parent_id', $request['parent_id']);
         })->paginate(10);
-        return view('users.index', compact('users'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $users
+        ], 200);
     }
 
-    public function create()
-    {
-        $roles = Role::all();
-        $languages = Translation::Languages;
-        return view('users.create', compact('languages', 'roles'));
-    }
-
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         DB::beginTransaction();
@@ -45,7 +41,6 @@ class UserController extends Controller
                 'last_name' => 'nullable|max:255',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
-                'roles' => 'nullable|exists:roles,id',
             ]);
             $user = new User();
             $user->parent_id = $parentId;
@@ -63,36 +58,37 @@ class UserController extends Controller
             $profile->address = $request->has('address') ? $request['address'] : null;
             $profile->language = $request->has('language') ? $request['language'] : null;
             $profile->save();
-            if ($request->has('roles'))
-                $user->Roles()->sync($request['roles']);
             DB::commit();
-            return redirect(route('users.index'));
+            return response()->json([
+                'status' => 'success',
+                'data' => $user,
+                'message' => __('user.created'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], 500);
         }
     }
 
-    public function show(User $user)
+    public function show(User $user): JsonResponse
     {
         $user->Profile->Translate();
-        return view('users.show', compact('user'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $user,
+        ], 200);
     }
 
-    public function edit(User $user)
-    {
-        $roles = Role::all();
-        $languages = Translation::Languages;
-        return view('users.edit', compact('user', 'languages', 'roles'));
-    }
-
-    public function update(User $user, Request $request)
+    public function update(User $user, Request $request): JsonResponse
     {
         DB::beginTransaction();
         try {
             $request->validate([
                 'name' => 'required|max:255',
-                'password' => 'nullable|min:6|max:32'. ($request->has('password') ? '|confirmed' : ''),
+                'password' => 'nullable|confirmed|min:6|max:32',
                 'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
                 'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
                 'first_name' => 'nullable|max:255',
@@ -100,11 +96,10 @@ class UserController extends Controller
                 'gender' => 'nullable|in:male,female',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
-                'roles' => 'nullable|exists:roles,id',
             ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['name'];
-            if ($request->has('password') && $request['password'] != null)
+            if ($request->has('password'))
                 $user->password = Hash::make($request['password']);
             if ($request->has('phone_number') && $request['phone_number'] != $user->phone_number) {
                 $user->phone_number = $request['phone_number'];
@@ -122,30 +117,74 @@ class UserController extends Controller
             $profile->gender = $request->has('gender') ? $request['gender'] : $profile->gender;
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : $profile->birthday;
             $profile->address = $request->has('address') ? $request['address'] : $profile->address;
-            $profile->language = $request->has('language') ? $request['language'] : $profile->language;
             $profile->save();
-            if ($request->has('roles'))
-                $user->Roles()->sync($request['roles']);
             DB::commit();
             $user->Profile->Translate();
-            return redirect(route('users.index'));
+            return response()->json([
+                'status' => 'success',
+                'data' => $user,
+                'message' => __('user.updated'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], 500);
         }
     }
 
-    public function destroy(User $user)
+    public function destroy(User $user): JsonResponse
     {
         DB::beginTransaction();
         try {
             $user->Profile()->delete();
             $user->delete();
             DB::commit();
-            return redirect(route('users.index'));
+            return response()->json([
+                'status' => 'success',
+                'message' => __('user.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-           dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage()
+            ], 500);
+        }
+    }
+
+    public function translations()
+    {
+        $translations = Translation::where('user_id', auth()->id())->paginate(10);
+        return response()->json([
+            'status' => 'success',
+            'data' => $translations,
+        ], 200);
+    }
+
+    public function translate(Translation $translation, Request $request)
+    {
+        $request->validate([
+            'translation' => 'required',
+        ]);
+        DB::beginTransaction();
+        try {
+            $translation->update([
+                'value' => $request['translation'],
+            ]);
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $translation,
+                'message' => __('user.translation.updated'),
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 

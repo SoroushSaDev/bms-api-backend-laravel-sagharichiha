@@ -2,115 +2,107 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\MqttMessageReceived;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
-use App\Models\Device;
 use App\Models\Register;
-use App\Services\MqttService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use PhpMqtt\Client\Exceptions\ConfigurationInvalidException;
-use PhpMqtt\Client\Exceptions\ConnectingToBrokerFailedException;
-use PhpMqtt\Client\Exceptions\DataTransferException;
-use PhpMqtt\Client\Exceptions\InvalidMessageException;
-use PhpMqtt\Client\Exceptions\MqttClientException;
-use PhpMqtt\Client\Exceptions\ProtocolViolationException;
-use PhpMqtt\Client\Exceptions\RepositoryException;
 
 class RegisterController extends Controller
 {
-    /**
-     * @throws ConnectingToBrokerFailedException
-     * @throws MqttClientException
-     * @throws RepositoryException
-     * @throws ConfigurationInvalidException
-     * @throws ProtocolViolationException
-     * @throws InvalidMessageException
-     * @throws DataTransferException
-     */
-    public function index(Device $device, Request $request)
+    public function index(Request $request): JsonResponse
     {
-        $mqttService = new MqttService();
-        $mqttService->connect();
-        $mqttService->subscribe($device->mqtt_topic, function ($topic, $message) {
-            broadcast(new MqttMessageReceived($topic, $message));
-        });
-        $mqttService->loop(0);
-        $registers = $device->Registers;
+        $registers = Register::when($request->has('device_id'), function ($query) use ($request) {
+            $query->where('device_id', $request['device_id']);
+        })->when(auth()->user()->type != 'admin', function ($query) {
+            $query->where('user_id', auth()->id());
+        })->paginate(10);
         $registers->map(function ($register) {
             $register->Translate();
         });
-        return $request->ajax()
-            ? view('registers.partial.table', compact('registers'))
-            : view('registers.index', compact('device', 'registers'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $registers,
+        ], 200);
     }
 
-    public function create(Device $device)
-    {
-        return view('registers.create', compact('device'));
-    }
-
-    public function store(Device $device, RegisterRequest $request)
+    public function store(RegisterRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
             $register = new Register();
-            $register->device_id = $device->id;
+            $register->device_id = $request['device_id'];
             $register->title = $request['title'];
             $register->unit = $request->has('unit') ? $request['unit'] : null;
             $register->type = $request->has('type') ? $request['type'] : null;
             $register->save();
             DB::commit();
             $register->Translate();
-            return redirect(route('devices.registers', $device));
+            return response()->json([
+                'status' => 'success',
+                'data' => $register,
+                'message' => __('register.created')
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
-    public function show(Register $register)
+    public function show(Register $register): JsonResponse
     {
         $register->Translate();
-        $device = $register->Device;
-        return view('registers.show', compact('register', 'device'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $register,
+        ], 200);
     }
 
-    public function edit(Register $register)
-    {
-        $device = $register->Device;
-        return view('registers.edit', compact('register', 'device'));
-    }
-
-    public function update(Register $register, RegisterRequest $request)
+    public function update(Register $register, RegisterRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
+            $register->device_id = $request['device_id'];
             $register->title = $request['title'];
             $register->unit = $request->has('unit') ? $request['unit'] : $register->unit;
             $register->type = $request->has('type') ? $request['type'] : $register->type;
             $register->save();
             DB::commit();
             $register->Translate();
-            $device = $register->Device;
-            return redirect(route('devices.registers', $device));
+            return response()->json([
+                'status' => 'success',
+                'data' => $register,
+                'message' => __('register.updated'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
-    public function destroy(Register $register)
+    public function destroy(Register $register): JsonResponse
     {
         DB::beginTransaction();
         try {
-            $device = $register->Device;
-            DB::commit();
             $register->delete();
-            return redirect(route('devices.registers', $device));
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => __('register.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 }

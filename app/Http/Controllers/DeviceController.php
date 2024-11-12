@@ -4,32 +4,32 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceRequest;
 use App\Models\Device;
+use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\View;
+use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Controller;
 
 class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->when(auth()->user()->type != 'admin', function ($query) {
-            $query->where('user_id', auth()->id());
-        })->when(auth()->user()->type == 'admin', function ($query) {
-            $query->where('parent_id', 0);
-        })->paginate(10);
+        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'brand', 'model', 'description'])
+            ->when(auth()->user()->type != 'admin', function ($query) {
+                $query->where('user_id', auth()->id());
+            })->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
         });
-        return view('devices.index', compact('devices'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $devices,
+        ], 200);
     }
 
-    public function create()
-    {
-        return view('devices.create');
-    }
-
-    public function store(DeviceRequest $request)
+    public function store(DeviceRequest $request): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -41,29 +41,33 @@ class DeviceController extends Controller
             $device->description = $request->has('description') ? $request['description'] : null;
             $device->lan = $request->has('lan') ? $request['lan'] : null;
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
-            $device->mqtt_topic = $request->has('topic') ? $request['topic'] : 'METARIOM/' . str_replace(' ', '_', $device->name);
             $device->save();
-            $device->SendToClient();
             DB::commit();
-            return redirect(route('devices.index'));
+            $device->Translate();
+            return response()->json([
+                'status' => 'success',
+                'data' => $device,
+                'message' => __('device.created'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
-    public function show(Device $device)
+    public function show(Device $device): JsonResponse
     {
         $device->Translate();
-        return view('devices.show', compact('device'));
+        return response()->json([
+            'status' => 'success',
+            'data' => $device,
+        ], 200);
     }
 
-    public function edit(Device $device)
-    {
-        return view('devices.edit', compact('device'));
-    }
-
-    public function update(DeviceRequest $request, Device $device)
+    public function update(DeviceRequest $request, Device $device): JsonResponse
     {
         DB::beginTransaction();
         try {
@@ -74,13 +78,20 @@ class DeviceController extends Controller
             $device->description = $request->has('description') ? $request['description'] : $device->description;
             $device->lan = $request->has('lan') ? $request['lan'] : $device->lan;
             $device->wifi = $request->has('type') ? $request['wifi'] : $device->wifi;
-            $device->mqtt_topic = $request->has('topic') ? $request['topic'] : 'METARIOM/' . str_replace(' ', '_', $device->name);
             $device->save();
             DB::commit();
-            return redirect(route('devices.index'));
+            $device->Translate();
+            return response()->json([
+                'status' => 'success',
+                'data' => $device,
+                'message' => __('device.updated'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 
@@ -90,10 +101,16 @@ class DeviceController extends Controller
         try {
             $device->delete();
             DB::commit();
-            return redirect(route('devices.index'));
+            return response()->json([
+                'status' => 'success',
+                'message' => __('device.deleted'),
+            ], 200);
         } catch (\Exception $exception) {
             DB::rollBack();
-            dd($exception);
+            return response()->json([
+                'status' => 'error',
+                'message' => $exception->getMessage(),
+            ], 500);
         }
     }
 }

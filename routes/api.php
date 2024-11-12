@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\CityController;
-use App\Http\Controllers\Api\DeviceController;
-use App\Http\Controllers\Api\PermissionController;
-use App\Http\Controllers\Api\ProjectController;
-use App\Http\Controllers\Api\RegisterController;
-use App\Http\Controllers\Api\RoleController;
-use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\VerifyCodeController;
+use App\Http\Controllers\CityController;
+use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\PermissionController;
+use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\RegisterController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\VerifyCodeController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
