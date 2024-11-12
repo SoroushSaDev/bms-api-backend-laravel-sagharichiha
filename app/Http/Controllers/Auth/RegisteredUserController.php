@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App;
 use App\Models\User;
 use App\Models\Profile;
 use Illuminate\Auth\Events\Registered;
@@ -11,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\App;
 
 class RegisteredUserController extends Controller
 {
