@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Auth;
+namespace App\Http\Controllers;
 
 use App\Models\User;
 use App\Models\Profile;
@@ -11,10 +11,11 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Auth;
 
-class RegisteredUserController extends Controller
+class AuthController extends Controller
 {
-    public function store(Request $request): JsonResponse
+    public function register(Request $request): JsonResponse
     {
         $request->validate([
             'name' => ['required', 'string', 'max:255'],
@@ -46,5 +47,34 @@ class RegisteredUserController extends Controller
             'user' => $user,
             'lang' => $lang,
         ]);
+    }
+
+    public function login(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+        if (!Auth::attempt($request->only('email', 'password')))
+            return response()->json(['message' => 'Invalid login credentials'], 401);
+        $user = Auth::user();
+        $token = $user->createToken('auth_token')->plainTextToken;
+        $lang = $user->Profile->language;
+        App::setLocale($lang);
+        return response()->json([
+            'access_token' => $token,
+            'token_type' => 'Bearer',
+            'user' => $user,
+            'status' => 'Login successful',
+            'lang' => $lang,
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json([
+            'message' => __('auth.logout'),
+        ], 200);
     }
 }

@@ -11,16 +11,15 @@ use App\Http\Controllers\VerifyCodeController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\AuthenticatedSessionController;
-use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\AuthController;
 
-Route::post('/register', [RegisteredUserController::class, 'store']);
-Route::post('/login', [AuthenticatedSessionController::class, 'store']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', function (Request $request) {
         return $request->user();
     });
-    Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
+    Route::post('/logout', [AuthController::class, 'logout']);
     Route::prefix('/cities')->name('cities.')->group(function () {
         Route::get('/', [CityController::class, 'index']);
         Route::post('/', [CityController::class, 'store']);
