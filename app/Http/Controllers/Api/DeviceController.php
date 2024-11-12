@@ -16,7 +16,7 @@ class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'type', 'brand', 'model', 'description'])
+        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'brand', 'model', 'description'])
             ->when(auth()->user()->type != 'admin', function ($query) {
                 $query->where('user_id', auth()->id());
             })->paginate(10);
