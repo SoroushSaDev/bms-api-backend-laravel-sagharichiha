@@ -18,6 +18,10 @@ return Application::configure(basePath: dirname(__DIR__))
             EnsureFrontendRequestsAreStateful::class,
         ]);
 
+        $middleware->validateCsrfTokens(except: [
+            '/api',
+        ]);
+
         $middleware->alias([
             'verified' => EnsureEmailIsVerified::class,
         ]);
