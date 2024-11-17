@@ -71,6 +71,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/{register:id}', [RegisterController::class, 'destroy']);
     });
     Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
+    Route::get('/GetCountries', [CityController::class, 'GetCountries']);
     Route::middleware(AdminMiddleware::class)->group(function () {
         Route::prefix('/permissions')->name('permissions.')->group(function () {
             Route::get('/', [PermissionController::class, 'index']);

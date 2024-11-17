@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CityRequest;
 use App\Models\City;
+use App\Models\Country;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -119,5 +120,14 @@ class CityController extends Controller
                 'message' => $exception->getMessage(),
             ]);
         }
+    }
+
+    public function GetCountries()
+    {
+        $countries = Country::select(['id', 'en_name', 'fa_name'])->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $countries,
+        ], 200);
     }
 }
