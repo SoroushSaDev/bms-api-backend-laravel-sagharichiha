@@ -4,13 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DeviceRequest;
 use App\Models\Device;
-use Illuminate\Contracts\View\Factory;
-use Illuminate\Contracts\View\View;
-use Illuminate\Foundation\Application;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use App\Models\Connection;
 
 class DeviceController extends Controller
 {
@@ -112,5 +110,14 @@ class DeviceController extends Controller
                 'message' => $exception->getMessage(),
             ], 500);
         }
+    }
+
+    public function GetConnections()
+    {
+        $connections = Connection::select(['id', 'name'])->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $connections,
+        ], 200);
     }
 }
