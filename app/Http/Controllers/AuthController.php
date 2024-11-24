@@ -12,6 +12,7 @@ use Illuminate\Validation\Rules;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -22,31 +23,39 @@ class AuthController extends Controller
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        Profile::create([
-            'user_id' => $user->id,
-            'language' => $request->has('lang') ? $request['lang'] : 'en',
-        ]);
-
-        event(new Registered($user));
-
-        $token = $user->createToken('auth_token')->plainTextToken;
-
-        $lang = $user->Profile->language;
-        App::setLocale($lang);
-
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-            'user' => $user,
-            'lang' => $lang,
-        ]);
+        DB::beginTransaction();
+        try {
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);    
+            $profile = Profile::create([
+                'user_id' => $user->id,
+                'language' => $request->has('lang') ? $request['lang'] : 'en',
+            ]);
+            event(new Registered($user));
+            $token = $user->createToken('auth_token')->plainTextToken;    
+            $lang = $user->Profile->language;
+            App::setLocale($lang);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'User created successfully',
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'data' => [
+                    'user' => $user,
+                    'profile' => $profile,
+                ],
+            ], 200);
+        } catch(\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error creating user',
+                'error' => $e,
+            ], 500);
+        }
     }
 
     public function login(Request $request)
@@ -62,11 +71,14 @@ class AuthController extends Controller
         $lang = $user->Profile->language;
         App::setLocale($lang);
         return response()->json([
+            'status' => 'success',
             'access_token' => $token,
             'token_type' => 'Bearer',
-            'user' => $user,
-            'status' => 'Login successful',
-            'lang' => $lang,
+            'message' => 'Logged in successfully',
+            'data' => [
+                'user' => $user,
+                'profile' => $user->Profile,
+            ],
         ]);
     }
 
@@ -74,6 +86,7 @@ class AuthController extends Controller
     {
         $request->user()->currentAccessToken()->delete();
         return response()->json([
+            'status' => 'success',
             'message' => __('auth.logout'),
         ], 200);
     }
