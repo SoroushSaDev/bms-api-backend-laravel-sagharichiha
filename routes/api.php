@@ -12,6 +12,7 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FormController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
@@ -61,11 +62,18 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::post('/check', [VerifyCodeController::class, 'check']);
         });
         Route::prefix('/registers')->name('registers.')->group(function () {
+            Route::get('/test', [RegisterController::class, 'test']);
             Route::get('/', [RegisterController::class, 'index']);
             Route::post('/', [RegisterController::class, 'store']);
             Route::get('/{register:id}', [RegisterController::class, 'show']);
             Route::patch('/{register:id}', [RegisterController::class, 'update']);
             Route::delete('/{register:id}', [RegisterController::class, 'destroy']);
+        });
+        Route::prefix('/forms')->name('forms.')->group(function () {
+            Route::get('/', [FormController::class, 'index']);
+            Route::post('/', [FormController::class, 'store']);
+            Route::get('/{form:id}', [FormController::class, 'show']);
+            Route::patch('/{form:id}', [FormController::class, 'update']);
         });
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
         Route::get('/GetCountries', [CityController::class, 'GetCountries']);

@@ -105,4 +105,28 @@ class RegisterController extends Controller
             ], 500);
         }
     }
+
+    public function test()
+    {
+        try {
+            $temp1 = Register::firstWhere('title', 'Temp 1');
+            $temp2 = Register::firstWhere('title', 'Temp 2');
+            $temp3 = Register::firstWhere('title', 'Temp 3');
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully fetched test data',
+                'data' => [
+                    'temp1' => $temp1->value,
+                    // 'temp2' => $temp2->value,
+                    'temp3' => $temp3->value,
+                ],
+            ], 200);
+        } catch(\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error fetching test data',
+                'errors' => $e,
+            ], 500);
+        }
+    }
 }
