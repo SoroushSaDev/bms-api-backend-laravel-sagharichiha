@@ -82,4 +82,24 @@ class FormController extends Controller
             ], 500);
         }
     }
+
+    public function destroy(Form $form)
+    {
+        DB::beginTransaction();
+        try {
+            $form->delete();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully deleted form',
+            ], 200);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error while creating form',
+                'errors' => $e,
+            ], 500);
+        }
+    }
 }

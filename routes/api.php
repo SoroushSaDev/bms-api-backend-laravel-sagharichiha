@@ -74,6 +74,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::post('/', [FormController::class, 'store']);
             Route::get('/{form:id}', [FormController::class, 'show']);
             Route::patch('/{form:id}', [FormController::class, 'update']);
+            Route::delete('/{form:id}', [FormController::class, 'destroy']);
         });
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
         Route::get('/GetCountries', [CityController::class, 'GetCountries']);
