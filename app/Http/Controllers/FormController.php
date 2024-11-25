@@ -10,7 +10,7 @@ class FormController extends Controller
 {
     public function index()
     {
-        $forms = Form::select(['user_id', 'name', 'content'])->get();
+        $forms = Form::select(['id', 'user_id', 'name', 'content'])->get();
         return response()->json([
             'status' => 'success',
             'data' => $forms,
