@@ -10,7 +10,7 @@ class FormController extends Controller
 {
     public function index()
     {
-        $forms = Form::select(['id', 'user_id', 'name', 'content'])->get();
+        $forms = Form::all();
         return response()->json([
             'status' => 'success',
             'data' => $forms,
@@ -22,6 +22,7 @@ class FormController extends Controller
         $request->validate([
             'name' => 'required|string|unique:forms,name',
             'content' => 'required|string',
+            'objects' => 'required',
         ]);
         DB::beginTransaction();
         try {
@@ -29,6 +30,7 @@ class FormController extends Controller
                 'user_id' => auth()->id(),
                 'name' => $request['name'],
                 'content' => $request['content'],
+                'objects' => $request['objects'],
             ]);
             DB::commit();
             return response()->json([
@@ -60,12 +62,14 @@ class FormController extends Controller
         $request->validate([
             'name' => 'required|string' . ($request['name'] != $form->name ? '|unique:forms,name' : ''),
             'content' => 'required|string',
+            'objects' => 'required',
         ]);
         DB::beginTransaction();
         try {
             $form->update([
                 'name' => $request['name'],
                 'content' => $request['content'],
+                'objects' => $request['objects'],
             ]);
             DB::commit();
             return response()->json([
