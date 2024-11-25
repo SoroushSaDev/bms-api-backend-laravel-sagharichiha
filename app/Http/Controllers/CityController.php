@@ -14,11 +14,11 @@ class CityController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        if (!City::CanShow())
-            return response()->json([
-                'status' => 'error',
-                'message' => __('auth.403'),
-            ], 403);
+        // if (!City::CanShow())
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => __('auth.403'),
+        //     ], 403);
         $cities = City::with('Country')->select(['id', 'name', 'country_id'])->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
         })->paginate(10);
@@ -33,11 +33,11 @@ class CityController extends Controller
 
     public function store(CityRequest $request): JsonResponse
     {
-        if (!City::CanCreate())
-            return response()->json([
-               'status' => 'error',
-               'message' => __('auth.403'),
-            ], 403);
+        // if (!City::CanCreate())
+        //     return response()->json([
+        //        'status' => 'error',
+        //        'message' => __('auth.403'),
+        //     ], 403);
         DB::beginTransaction();
         try {
             $city = City::create([
@@ -71,11 +71,11 @@ class CityController extends Controller
 
     public function update(City $city, CityRequest $request): JsonResponse
     {
-        if (!$city->CanEdit())
-            return response()->json([
-                'status' => 'error',
-                'message' => __('auth.403'),
-            ], 403);
+        // if (!$city->CanEdit())
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => __('auth.403'),
+        //     ], 403);
         DB::beginTransaction();
         try {
             $city->update([
@@ -100,11 +100,11 @@ class CityController extends Controller
 
     public function destroy(City $city): JsonResponse
     {
-        if (!City::CanDelete())
-            return response()->json([
-                'status' => 'error',
-                'message' => __('auth.403'),
-            ], 403);
+        // if (!City::CanDelete())
+        //     return response()->json([
+        //         'status' => 'error',
+        //         'message' => __('auth.403'),
+        //     ], 403);
         DB::beginTransaction();
         try {
             $city->delete();
