@@ -58,7 +58,7 @@ class FormController extends Controller
     public function update(Form $form, Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:forms,name',
+            'name' => 'required|string' . ($request['name'] != $form->name ? '|unique:forms,name' : ''),
             'content' => 'required|string',
         ]);
         DB::beginTransaction();
