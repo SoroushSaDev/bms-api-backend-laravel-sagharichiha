@@ -23,14 +23,14 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            '0.*' => 'required|file',
+            'files.*' => 'required|file',
         ]);
+
         DB::beginTransaction();
         try {
             $files = [];
             $id = auth()->id();
-            foreach($request[0] as $fileReq) {
-                $file = $fileReq->file();
+            foreach($request->file('files') as $file) {
                 $day = Carbon::today()->day;
                 $year = Carbon::today()->year;
                 $month = Carbon::today()->month;
