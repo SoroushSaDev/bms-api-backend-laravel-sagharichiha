@@ -29,7 +29,8 @@ class FileController extends Controller
         try {
             $files = [];
             $id = auth()->id();
-            foreach($request->file(0) as $file) {
+            foreach($request[0] as $fileReq) {
+                $file = $fileReq->file();
                 $day = Carbon::today()->day;
                 $year = Carbon::today()->year;
                 $month = Carbon::today()->month;
