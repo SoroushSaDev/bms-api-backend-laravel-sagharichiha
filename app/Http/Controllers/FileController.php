@@ -36,6 +36,7 @@ class FileController extends Controller
                 $destinationPath = "img/Users/$id/$year/$month/$day";
                 $extension = $file->getClientOriginalExtension();
                 $fileName = rand(11111, 99999) . '.' . $extension;
+                $fileSize = $file->getSize();
                 $file->move($destinationPath, $fileName);
                 $files[] = File::create([
                     'user_id' => $id,
@@ -43,6 +44,7 @@ class FileController extends Controller
                     'fileable_id' => $id,
                     'path' => $destinationPath . '/' . $fileName,
                     'extension' => $extension,
+                    'size' => $fileSize,
                 ]);
             }
             DB::commit();
