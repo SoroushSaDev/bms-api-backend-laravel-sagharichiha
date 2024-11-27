@@ -23,8 +23,9 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'files.*' => 'required',
+            'files.*' => 'required|file',
         ]);
+        dd($request->all());
         DB::beginTransaction();
         try {
             $files = [];
@@ -58,7 +59,7 @@ class FileController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error while uploading files',
-                'errors' => $e,
+                'errors' => $e->getMessage(),
             ], 500);
         }
     }
@@ -77,8 +78,8 @@ class FileController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while deleting file',
-                'errors' => $e,
+                'message' => 'Error while uploading files',
+                'errors' => $e->getMessage(),
             ], 500);
         }
     }
