@@ -12,6 +12,7 @@ use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FormController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
@@ -75,6 +76,11 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::get('/{form:id}', [FormController::class, 'show']);
             Route::patch('/{form:id}', [FormController::class, 'update']);
             Route::delete('/{form:id}', [FormController::class, 'destroy']);
+        });
+        Route::prefix('/files')->name('files.')->group(function () {
+            Route::get('/', [FileController::class, 'index']);
+            Route::post('/', [FileController::class, 'store']);
+            Route::delete('/{file:id}', [FileController::class, 'destroy']);
         });
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
         Route::get('/GetCountries', [CityController::class, 'GetCountries']);

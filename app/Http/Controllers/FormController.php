@@ -10,9 +10,10 @@ class FormController extends Controller
 {
     public function index()
     {
-        $forms = Form::all();
+        $forms = Form::where('user_id', auth()->id())->get();
         return response()->json([
             'status' => 'success',
+            'message' => 'Successfully fetched forms',
             'data' => $forms,
         ], 200);
     }
@@ -35,7 +36,7 @@ class FormController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Form created successfully',
+                'message' => 'Successfully created form',
                 'data' => $form,
             ], 200);
         } catch(\Exception $e) {
@@ -43,7 +44,7 @@ class FormController extends Controller
             return response()->json([
                 'status' => 'error',
                 'message' => 'Error while creating form',
-                'data' => $e,
+                'errors' => $e,
             ], 500);
         }
     }
@@ -52,7 +53,7 @@ class FormController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'message' => 'Successfully fetched form data',
+            'message' => 'Successfully fetched form',
             'data' => $form
         ], 200);
     }
@@ -74,15 +75,15 @@ class FormController extends Controller
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Form updated successfully',
+                'message' => 'Successfully updated form',
                 'data' => $form,
             ], 200);
         } catch(\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while creating form',
-                'data' => $e,
+                'message' => 'Error while updating form',
+                'errors' => $e,
             ], 500);
         }
     }
@@ -101,7 +102,7 @@ class FormController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while creating form',
+                'message' => 'Error while deleting form',
                 'errors' => $e,
             ], 500);
         }
