@@ -23,16 +23,13 @@ class FileController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'files.*' => 'required|file',
-        ]);
-        return response()->json([
-            'test' => $request->all(),
+            '0.*' => 'required|file',
         ]);
         DB::beginTransaction();
         try {
             $files = [];
             $id = auth()->id();
-            foreach($request['files'] as $file) {
+            foreach($request->file(0) as $file) {
                 $day = Carbon::today()->day;
                 $year = Carbon::today()->year;
                 $month = Carbon::today()->month;
