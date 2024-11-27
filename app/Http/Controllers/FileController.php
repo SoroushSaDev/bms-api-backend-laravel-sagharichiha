@@ -25,7 +25,9 @@ class FileController extends Controller
         $request->validate([
             'files.*' => 'required|file',
         ]);
-        dd($request->all());
+        return response()->json([
+            'test' => $request->all(),
+        ]);
         DB::beginTransaction();
         try {
             $files = [];
