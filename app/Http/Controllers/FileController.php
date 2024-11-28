@@ -10,9 +10,11 @@ use Illuminate\Support\Facades\DB;
 
 class FileController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $files = File::where('user_id', auth()->id())->get();
+        $files = File::where('user_id', auth()->id())->when($request->has('category'), function($query) use ($request) {
+            $query->where('category_id', $request['category']);
+        })->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully fetched files',
@@ -24,8 +26,8 @@ class FileController extends Controller
     {
         $request->validate([
             'files.*' => 'required|file',
+            'category' => 'nullable|exists:categories,id',
         ]);
-
         DB::beginTransaction();
         try {
             $files = [];
@@ -46,6 +48,7 @@ class FileController extends Controller
                     'path' => $destinationPath . '/' . $fileName,
                     'extension' => $extension,
                     'size' => $fileSize,
+                    'category_id' => $request->has('category') ? $request['category'] : 0,
                 ]);
             }
             DB::commit();
