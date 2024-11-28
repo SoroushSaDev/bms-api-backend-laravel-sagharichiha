@@ -2,107 +2,108 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Form;
+use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
-class FormController extends Controller
+class CategoryController extends Controller
 {
     public function index()
     {
-        $forms = Form::where('user_id', auth()->id())->get();
+        $categories = Category::whereIn('user_id', [0, auth()->id()])->get();
         return response()->json([
             'status' => 'success',
-            'message' => 'Successfully fetched forms',
-            'data' => $forms,
+            'message' => 'Categories fetched successfully',
+            'data' => $categories,
         ], 200);
     }
 
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required|string|unique:forms,name',
-            'content' => 'required|string',
-            'objects' => 'required',
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'type' => ['required', Rule::in(Category::Types)],
         ]);
         DB::beginTransaction();
         try {
-            $form = Form::create([
+            $category = Category::create([
                 'user_id' => auth()->id(),
-                'name' => $request['name'],
-                'content' => $request['content'],
-                'objects' => $request['objects'],
+                'type' => $request['type'],
+                'title' => $request['title'],
+                'description' => $request['description'],
             ]);
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Successfully created form',
-                'data' => $form,
+                'message' => 'Category created successfully',
+                'data' => $category,
             ], 200);
         } catch(\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while creating form',
+                'message' => 'Error while creating category',
                 'errors' => $e->getMessage(),
             ], 500);
         }
     }
 
-    public function show(Form $form)
+    public function show(Category $category)
     {
         return response()->json([
             'status' => 'success',
-            'message' => 'Successfully fetched form',
-            'data' => $form
+            'message' => 'Category fetched successfully',
+            'data' => $category,
         ], 200);
     }
 
-    public function update(Form $form, Request $request)
+    public function update(Category $category, Request $request)
     {
         $request->validate([
-            'name' => 'required|string' . ($request['name'] != $form->name ? '|unique:forms,name' : ''),
-            'content' => 'required|string',
-            'objects' => 'required',
+            'title' => 'required|string',
+            'description' => 'nullable|string',
+            'type' => ['required', Rule::in(Category::Types)],
         ]);
         DB::beginTransaction();
         try {
-            $form->update([
-                'name' => $request['name'],
-                'content' => $request['content'],
-                'objects' => $request['objects'],
+            $category->update([
+                'type' => $request['type'],
+                'title' => $request['title'],
+                'description' => $request['description'],
             ]);
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Successfully updated form',
-                'data' => $form,
+                'message' => 'Category updated successfully',
+                'data' => $category,
             ], 200);
         } catch(\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while updating form',
+                'message' => 'Error while updating category',
                 'errors' => $e->getMessage(),
             ], 500);
         }
     }
 
-    public function destroy(Form $form)
+    public function destroy(Category $category)
     {
         DB::beginTransaction();
         try {
-            $form->delete();
+            $category->delete();
             DB::commit();
             return response()->json([
                 'status' => 'success',
-                'message' => 'Successfully deleted form',
+                'message' => 'Successfully deleted category',
             ], 200);
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error while deleting form',
+                'message' => 'Error while deleting category',
                 'errors' => $e->getMessage(),
             ], 500);
         }
