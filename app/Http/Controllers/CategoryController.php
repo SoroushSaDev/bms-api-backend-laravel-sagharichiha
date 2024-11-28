@@ -11,7 +11,7 @@ class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::whereIn('user_id', [0, auth()->id()])->get();
+        $categories = Category::where('user_id', auth()->id())->orWhereNull('user_id')->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Categories fetched successfully',
