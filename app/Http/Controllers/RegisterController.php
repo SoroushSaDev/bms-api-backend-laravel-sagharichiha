@@ -15,14 +15,13 @@ class RegisterController extends Controller
     {
         $registers = Register::when($request->has('device_id'), function ($query) use ($request) {
             $query->where('device_id', $request['device_id']);
-        })->when(auth()->user()->type != 'admin', function ($query) {
-            $query->where('user_id', auth()->id());
         })->paginate(10);
         $registers->map(function ($register) {
             $register->Translate();
         });
         return response()->json([
             'status' => 'success',
+            'message' => 'Registers fetched successfully',
             'data' => $registers,
         ], 200);
     }
