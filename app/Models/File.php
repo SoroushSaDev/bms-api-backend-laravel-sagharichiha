@@ -16,4 +16,9 @@ class File extends Model
     {
         return $this->morphTo();
     }
+
+    public function Category()
+    {
+        return $this->belongsTo(Category::class, 'category_id', 'id');
+    }
 }

@@ -12,7 +12,7 @@ class FileController extends Controller
 {
     public function index(Request $request)
     {
-        $files = File::where('user_id', auth()->id())->when($request->has('category'), function($query) use ($request) {
+        $files = File::with('Category')->where('user_id', auth()->id())->when($request->has('category'), function($query) use ($request) {
             $query->where('category_id', $request['category']);
         })->get();
         return response()->json([
