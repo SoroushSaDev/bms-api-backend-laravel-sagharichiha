@@ -9,15 +9,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Models\Connection;
+use App\Models\Pattern;
 
 class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->select(['id', 'user_id', 'name', 'brand', 'model', 'description'])
-            ->when(auth()->user()->type != 'admin', function ($query) {
-                $query->where('user_id', auth()->id());
-            })->paginate(10);
+        $devices = Device::with(['User', 'Registers'])->where('user_id', auth()->id())->paginate(10);
         $devices->map(function ($device) {
             $device->Translate();
         });
@@ -33,13 +31,31 @@ class DeviceController extends Controller
         try {
             $device = new Device();
             $device->name = $request['name'];
-            $device->type = $request->has('type') ? $request['type'] : null;
+            $device->board_id = $request->has('board') ? $request['board'] : null;
             $device->brand = $request->has('brand') ? $request['brand'] : null;
             $device->model = $request->has('model') ? $request['model'] : null;
             $device->description = $request->has('description') ? $request['description'] : null;
             $device->lan = $request->has('lan') ? $request['lan'] : null;
             $device->wifi = $request->has('wifi') ? $request['wifi'] : null;
+            $device->connection_id = $request['connection'];
+            $device->mqtt_topic = $request['topic'];
             $device->save();
+            if ($request->has('separator')) {
+                foreach ($request['separator'] as $i => $separator) {
+                    Pattern::create([
+                        'user_id' => auth()->id(),
+                        'device_id' => $device->id,
+                        'setter' => $request['setter'][$i],
+                        'use_board_id' => $request['use_board_id'][$i] == 'true',
+                        'beginner' => $request['beginner'][$i],
+                        'finisher' => $request['finisher'][$i],
+                        'separator' => $separator ?? ',',
+                        'connector' => $request['connector'][$i],
+                        'length' => $request['length'][$i],
+                        'type' => $request['type'][$i],
+                    ]);
+                }
+            }
             DB::commit();
             $device->Translate();
             return response()->json([
