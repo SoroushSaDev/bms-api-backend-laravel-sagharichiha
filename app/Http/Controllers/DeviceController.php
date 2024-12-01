@@ -128,6 +128,16 @@ class DeviceController extends Controller
         }
     }
 
+    public function registers(Device $device)
+    {
+        $registers = $device->Registers;
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Device Registers Fetched Successfully',
+            'data' => $registers,
+        ], 200);
+    }
+
     public function GetConnections()
     {
         $connections = Connection::select(['id', 'name'])->get();

@@ -42,7 +42,7 @@ class DeviceRequest extends FormRequest
         throw new HttpResponseException(response()->json([
             'status' => 'error',
             'message' => 'Validation errors',
-            'data' => $validator->errors()
+            'data' => $validator->errors(),
         ], 422));
     }
 }

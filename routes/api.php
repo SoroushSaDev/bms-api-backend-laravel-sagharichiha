@@ -38,6 +38,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::get('/{device:id}', [DeviceController::class, 'show']);
             Route::patch('/{device:id}', [DeviceController::class, 'update']);
             Route::delete('/{device:id}', [DeviceController::class, 'destroy']);
+            Route::get('/{device:id}/registers', [DeviceController::class, 'registers']);
         });
         Route::prefix('/projects')->name('projects.')->group(function () {
             Route::get('/', [ProjectController::class, 'index']);
