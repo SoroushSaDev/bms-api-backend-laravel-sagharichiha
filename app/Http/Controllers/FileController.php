@@ -24,6 +24,7 @@ class FileController extends Controller
 
     public function store(Request $request)
     {
+        dd($request->all());
         $request->validate([
             'files.*' => 'required|file',
             'category' => 'nullable|exists:categories,id',
