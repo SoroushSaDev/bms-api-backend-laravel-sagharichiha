@@ -15,7 +15,7 @@ class RegisterController extends Controller
     {
         $registers = Register::when($request->has('device_id'), function ($query) use ($request) {
             $query->where('device_id', $request['device_id']);
-        })->paginate(10);
+        })->get();
         $registers->map(function ($register) {
             $register->Translate();
         });
