@@ -15,7 +15,7 @@ class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->where('user_id', auth()->id())->get();
+        $devices = Device::with(['User', 'Registers'])->get();
         $devices->map(function ($device) {
             $device->Translate();
         });
