@@ -15,6 +15,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\VirtualRealityController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
 Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
@@ -91,8 +92,17 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::patch('/{category:id}', [CategoryController::class, 'update']);
             Route::delete('/{category:id}', [CategoryController::class, 'destroy']);
         });
+        Route::prefix('/virtual-realities')->name('VR.')->group(function () {
+            Route::get('/', [VirtualRealityController::class, 'index']);
+            Route::post('/', [VirtualRealityController::class, 'store']);
+            Route::get('/{vr:id}', [VirtualRealityController::class, 'show']);
+            Route::patch('/{vr:id}', [VirtualRealityController::class, 'update']);
+            Route::delete('/{vr:id}', [VirtualRealityController::class, 'destroy']);
+        });
+
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
         Route::get('/GetCountries', [CityController::class, 'GetCountries']);
+
         Route::middleware(AdminMiddleware::class)->group(function () {
             Route::prefix('/permissions')->name('permissions.')->group(function () {
                 Route::get('/', [PermissionController::class, 'index']);
