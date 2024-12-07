@@ -31,10 +31,11 @@ class RegisterController extends Controller
         DB::beginTransaction();
         try {
             $register = new Register();
-            $register->device_id = $request['device_id'];
             $register->title = $request['title'];
+            $register->device_id = $request['device_id'];
             $register->unit = $request->has('unit') ? $request['unit'] : null;
             $register->type = $request->has('type') ? $request['type'] : null;
+            $register->value = $request->has('value') ? $request['value'] : null;
             $register->save();
             DB::commit();
             $register->Translate();
@@ -65,10 +66,11 @@ class RegisterController extends Controller
     {
         DB::beginTransaction();
         try {
-            $register->device_id = $request['device_id'];
             $register->title = $request['title'];
+            $register->device_id = $request['device_id'];
             $register->unit = $request->has('unit') ? $request['unit'] : $register->unit;
             $register->type = $request->has('type') ? $request['type'] : $register->type;
+            $register->value = $request->has('value') ? $request['value'] : $request->value;
             $register->save();
             DB::commit();
             $register->Translate();

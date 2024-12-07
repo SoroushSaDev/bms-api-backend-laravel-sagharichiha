@@ -33,19 +33,16 @@ class RegisterRequest extends FormRequest
             'type' => ['nullable', Rule::in(Register::Types)],
             'input' => 'nullable|in:digital,analog',
             'output' => 'nullable|in:digital,analog',
+            'value' => 'nullable',
         ];
     }
 
     public function failedValidation(Validator $validator)
     {
-        if (request()->is('api/*')) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'Validation errors',
                 'data' => $validator->errors(),
             ], 422);
-        } else {
-            dd($validator->errors());
-        }
     }
 }
