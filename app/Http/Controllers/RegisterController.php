@@ -73,7 +73,7 @@ class RegisterController extends Controller
             $register->value = $request->has('value') ? $request['value'] : $request->value;
             $register->save();
             DB::commit();
-            $register->Translate();
+            // $register->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $register,
