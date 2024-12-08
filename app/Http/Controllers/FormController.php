@@ -8,9 +8,11 @@ use Illuminate\Support\Facades\DB;
 
 class FormController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $forms = Form::where('user_id', auth()->id())->get();
+        $forms = Form::with('Category')->where('user_id', auth()->id())->when($request->has('category'), function($query) use ($request) {
+            $query->where('category_id', $request['category']);
+        })->get();
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully fetched forms',
@@ -32,6 +34,7 @@ class FormController extends Controller
                 'name' => $request['name'],
                 'content' => $request['content'],
                 'objects' => $request['objects'],
+                'category_id' => $request->has('category') ? $request['category'] : 0,
             ]);
             DB::commit();
             return response()->json([
@@ -71,6 +74,7 @@ class FormController extends Controller
                 'name' => $request['name'],
                 'content' => $request['content'],
                 'objects' => $request['objects'],
+                'category_id' => $request->has('category') ? $request['category'] : $form->category_id,
             ]);
             DB::commit();
             return response()->json([
