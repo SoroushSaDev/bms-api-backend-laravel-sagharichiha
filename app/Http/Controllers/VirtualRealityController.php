@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\VirtualReality;
+use App\Models\VirtualRealityData;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -10,7 +10,7 @@ class VirtualRealityController extends Controller
 {
     public function index()
     {
-        $vrs = VirtualReality::all();
+        $vrs = VirtualRealityData::all();
         return response()->json([
             'status' => 'success',
             'data' => $vrs,
@@ -26,7 +26,7 @@ class VirtualRealityController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $vr = VirtualReality::create([
+            $vr = VirtualRealityData::create([
                 'user_id' => auth()->check() ? auth()->id() : null,
                 'title' => $request['title'],
                 'data' => $request['data'],
@@ -47,7 +47,7 @@ class VirtualRealityController extends Controller
         }
     }
 
-    public function show(VirtualReality $vr)
+    public function show(VirtualRealityData $vr)
     {
         return response()->json([
             'status' => 'success',
@@ -56,7 +56,7 @@ class VirtualRealityController extends Controller
         ], 200);
     }
 
-    public function update(VirtualReality $vr, Request $request)
+    public function update(VirtualRealityData $vr, Request $request)
     {
         $request->validate([
             'title' => 'required|string',
@@ -85,7 +85,7 @@ class VirtualRealityController extends Controller
         }
     }
 
-    public function destroy(VirtualReality $vr)
+    public function destroy(VirtualRealityData $vr)
     {
         DB::beginTransaction();
         try {
