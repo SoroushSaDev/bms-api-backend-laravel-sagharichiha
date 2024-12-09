@@ -92,12 +92,14 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::patch('/{category:id}', [CategoryController::class, 'update']);
             Route::delete('/{category:id}', [CategoryController::class, 'destroy']);
         });
-        Route::prefix('/virtual-realities')->name('VR.')->group(function () {
-            Route::get('/', [VirtualRealityController::class, 'index']);
-            Route::post('/', [VirtualRealityController::class, 'store']);
-            Route::get('/{vr:id}', [VirtualRealityController::class, 'show']);
-            Route::patch('/{vr:id}', [VirtualRealityController::class, 'update']);
-            Route::delete('/{vr:id}', [VirtualRealityController::class, 'destroy']);
+        Route::prefix('/vr')->name('vr.')->group(function () {
+            Route::prefix('/data')->name('data.')->group(function() {
+                Route::get('/', [VirtualRealityController::class, 'index']);
+                Route::post('/', [VirtualRealityController::class, 'store']);
+                Route::get('/{vr:id}', [VirtualRealityController::class, 'show']);
+                Route::patch('/{vr:id}', [VirtualRealityController::class, 'update']);
+                Route::delete('/{vr:id}', [VirtualRealityController::class, 'destroy']);
+            });
         });
 
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
