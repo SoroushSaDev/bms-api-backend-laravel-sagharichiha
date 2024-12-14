@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AugmentedRealityController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\PermissionController;
@@ -100,6 +101,13 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
                 Route::patch('/{vr:id}', [VirtualRealityController::class, 'update']);
                 Route::delete('/{vr:id}', [VirtualRealityController::class, 'destroy']);
             });
+        });
+        Route::prefix('/augmented-realities')->name('AR.')->group(function () {
+            Route::get('/', [AugmentedRealityController::class, 'index']);
+            Route::post('/', [AugmentedRealityController::class, 'store']);
+            Route::get('/{ar:id}', [AugmentedRealityController::class, 'show']);
+            Route::patch('/{ar:id}', [AugmentedRealityController::class, 'update']);
+            Route::delete('/{ar:id}', [AugmentedRealityController::class, 'destroy']);
         });
 
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
