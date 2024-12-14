@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\File;
 use App\Models\User;
+use App\Models\VirtualRealityData;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -79,6 +80,49 @@ class FileController extends Controller
                 'message' => 'Successfully deleted file',
             ], 200);
         } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Error while uploading files',
+                'errors' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function VR(Request $request)
+    {
+        $request->validate([
+            'files' => 'required',
+            'files.*' => 'required|file',
+        ]);
+        DB::beginTransaction();
+        try {
+            $files = [];
+            foreach($request->file('files') as $file) {
+                $day = Carbon::today()->day;
+                $year = Carbon::today()->year;
+                $month = Carbon::today()->month;
+                $destinationPath = "VR/$year/$month/$day";
+                $extension = $file->getClientOriginalExtension();
+                $fileName = rand(11111, 99999) . '.' . $extension;
+                $fileSize = $file->getSize();
+                $file->move($destinationPath, $fileName);
+                $files[] = File::create([
+                    'user_id' => 0,
+                    'fileable_type' => VirtualRealityData::class,
+                    'fileable_id' => 0,
+                    'path' => $destinationPath . '/' . $fileName,
+                    'extension' => $extension,
+                    'size' => $fileSize,
+                ]);
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Successfully uploaded files',
+                'data' => $files,
+            ], 200);
+        } catch(\Exception $e) {
             DB::rollBack();
             return response()->json([
                 'status' => 'error',

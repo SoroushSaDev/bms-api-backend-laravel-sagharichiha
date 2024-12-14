@@ -122,4 +122,5 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             });
         });
     });
+    Route::post('/vr/upload', [FileController::class, 'VR']);
 });
