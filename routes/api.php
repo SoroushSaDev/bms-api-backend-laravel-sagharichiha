@@ -43,6 +43,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::get('/{device:id}/registers', [DeviceController::class, 'registers']);
         });
         Route::prefix('/projects')->name('projects.')->group(function () {
+            Route::get('/types', [ProjectController::class, 'types'])->name('types');
             Route::get('/', [ProjectController::class, 'index']);
             Route::post('/', [ProjectController::class, 'store']);
             Route::get('/{project:id}', [ProjectController::class, 'show']);

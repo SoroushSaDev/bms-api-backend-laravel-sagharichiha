@@ -141,4 +141,13 @@ class ProjectController extends Controller
             ], 500);
         }
     }
+
+    public function types()
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => Project::Types,
+            'message' => 'Project types fetched successfully',
+        ], 200);
+    }
 }

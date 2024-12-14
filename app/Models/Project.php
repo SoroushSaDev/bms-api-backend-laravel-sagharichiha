@@ -29,6 +29,22 @@ class Project extends Model
         });
     }
 
+    const Types = [
+        'AR' => [
+            'title' => 'AR (Augmented Reality)',
+            'children' => [
+                'ImageProcessing' => 'Image Processing',
+                'Panorama' => 'Panorama (360)',
+            ],
+        ],
+        'VR' => [
+            'title' => 'VR (Virtual Reality)',
+            'children' => [
+                'VR' => 'VR (Virtual Reality)',
+            ],
+        ],
+    ];
+
     public function User(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

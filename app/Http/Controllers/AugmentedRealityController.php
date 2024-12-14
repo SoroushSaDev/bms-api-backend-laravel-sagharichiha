@@ -53,7 +53,7 @@ class AugmentedRealityController extends Controller
                 ]);
             }
             $id = $ar->id;
-            foreach($request['files'] as $file) {
+            foreach($request['files'] as $i => $file) {
                 $day = Carbon::today()->day;
                 $year = Carbon::today()->year;
                 $month = Carbon::today()->month;
@@ -69,7 +69,7 @@ class AugmentedRealityController extends Controller
                     'path' => $destinationPath . '/' . $fileName,
                     'extension' => $extension,
                     'size' => $fileSize,
-                    'use_type' => $request['index'],
+                    'use_type' => $i,
                 ]);
             }
             DB::commit();
