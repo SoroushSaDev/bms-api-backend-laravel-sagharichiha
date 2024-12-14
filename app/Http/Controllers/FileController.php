@@ -114,6 +114,7 @@ class FileController extends Controller
                     'path' => $destinationPath . '/' . $fileName,
                     'extension' => $extension,
                     'size' => $fileSize,
+                    'use_type' => 'VR',
                 ]);
             }
             DB::commit();
