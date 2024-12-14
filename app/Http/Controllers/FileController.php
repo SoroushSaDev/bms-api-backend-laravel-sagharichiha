@@ -103,9 +103,8 @@ class FileController extends Controller
                 $year = Carbon::today()->year;
                 $month = Carbon::today()->month;
                 $destinationPath = "VR/$year/$month/$day";
-                $name = $file->getClientOriginalName();
                 $extension = $file->getClientOriginalExtension();
-                $fileName = "$name.$extension";
+                $fileName = $file->getClientOriginalName();
                 $fileSize = $file->getSize();
                 $file->move($destinationPath, $fileName);
                 $files[] = File::create([
