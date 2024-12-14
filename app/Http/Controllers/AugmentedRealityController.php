@@ -37,7 +37,7 @@ class AugmentedRealityController extends Controller
                 'description' => $request['description'],
             ]);
             if ($request->hasFile('mindFile')) {
-                $file = $request->file('mind');
+                $file = $request->file('mindFile');
                 $destinationPath = 'img/AR/' . $ar->id;
                 $extension = 'txt';
                 $fileName = rand(11111, 99999) . '.' . $extension;
