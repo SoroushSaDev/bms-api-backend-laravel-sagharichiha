@@ -60,6 +60,11 @@ class Project extends Model
         return $this->hasMany(Device::class, 'project_id', 'id');
     }
 
+    public function SubProjects()
+    {
+        return $this->hasMany(SubProject::class, 'project_id', 'id');
+    }
+
     public function HasDevice($device): int
     {
         $devices = Device::where('parent_id', $device)->where('project_id', $this->id)->get();

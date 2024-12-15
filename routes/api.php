@@ -16,6 +16,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FormController;
+use App\Http\Controllers\SubProjectController;
 use App\Http\Controllers\VirtualRealityController;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
@@ -44,11 +45,19 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
         });
         Route::prefix('/projects')->name('projects.')->group(function () {
             Route::get('/types', [ProjectController::class, 'types'])->name('types');
-            Route::get('/', [ProjectController::class, 'index']);
-            Route::post('/', [ProjectController::class, 'store']);
-            Route::get('/{project:id}', [ProjectController::class, 'show']);
-            Route::patch('/{project:id}', [ProjectController::class, 'update']);
-            Route::delete('/{project:id}', [ProjectController::class, 'destroy']);
+            Route::get('/', [ProjectController::class, 'index'])->name('index');
+            Route::post('/', [ProjectController::class, 'store'])->name('store');
+            Route::get('/{project:id}', [ProjectController::class, 'show'])->name('show');
+            Route::patch('/{project:id}', [ProjectController::class, 'update'])->name('update');
+            Route::delete('/{project:id}', [ProjectController::class, 'destroy'])->name('destroy');
+            Route::prefix('/{project:id}/subs')->name('subs.')->group(function () {
+                Route::get('/', [SubProjectController::class, 'index'])->name('index');
+                Route::post('/', [SubProjectController::class, 'store'])->name('store');
+                Route::get('/{sub}', [SubProjectController::class, 'show'])->name('show');
+                Route::patch('/{sub}', [SubProjectController::class, 'update'])->name('update');
+                Route::delete('/{sub}', [SubProjectController::class, 'destroy'])->name('destroy');
+                Route::get('/{sub}/scan', [SubProjectController::class, 'scan'])->name('scan');
+            });
         });
         Route::prefix('/users')->name('users.')->group(function () {
             Route::get('/', [UserController::class, 'index']);
