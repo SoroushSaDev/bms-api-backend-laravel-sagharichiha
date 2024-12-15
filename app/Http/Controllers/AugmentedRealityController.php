@@ -90,10 +90,11 @@ class AugmentedRealityController extends Controller
 
     public function show(AugmentedReality $ar)
     {
+        $images = $ar->Files->whereNotNull('use_type')->sortBy('use_type');
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully fetched AR data',
-            'data' => $ar
+            'data' => [$ar, $images],
         ], 200);
     }
 
