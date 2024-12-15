@@ -14,7 +14,7 @@ class CityController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $cities = City::with('Country')->select(['id', 'name', 'country_id'])->when($request->has('country_id'), function ($query) use ($request) {
+        $cities = City::with('Country')->when($request->has('country_id'), function ($query) use ($request) {
             $query->where('country_id', $request->get('country_id'));
         })->get();
         $cities->map(function (City $city) {
@@ -23,6 +23,7 @@ class CityController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $cities,
+            'message' => 'Fetched cities successfully',
         ], 200);
     }
 
@@ -45,7 +46,8 @@ class CityController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while storing cities',
             ], 500);
         }
     }
@@ -56,6 +58,7 @@ class CityController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $city,
+            'message' => 'Fetched city successfully',
         ], 200);
     }
 
@@ -78,7 +81,8 @@ class CityController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while updating cities',
             ], 500);
         }
     }
@@ -97,7 +101,8 @@ class CityController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while deleting cities',
             ]);
         }
     }
@@ -108,6 +113,7 @@ class CityController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $countries,
+            'message' => 'Fetched countries successfully',
         ], 200);
     }
 }
