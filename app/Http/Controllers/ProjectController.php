@@ -36,6 +36,7 @@ class ProjectController extends Controller
         try {
             $project = new Project();
             $project->name = $request['name'];
+            $project->type = $request['type'];
             $project->city_id = $request['city'];
             $project->address = $request->has('address') ? $request['address'] : null;
             $project->description = $request->has('description') ? $request['description'] : null;
@@ -85,6 +86,7 @@ class ProjectController extends Controller
         DB::beginTransaction();
         try {
             $project->name = $request['name'];
+            $project->type = $request['type'];
             $project->city_id = $request['city'];
             $project->address = $request->has('address') ? $request['address'] : $project->address;
             $project->description = $request->has('description') ? $request['description'] : $project->description;
