@@ -13,7 +13,7 @@ class SubProjectController extends Controller
     public function index(Project $project)
     {
         $subs = $project->SubProjects;
-        $subs->map(function($sub) {
+        $subs->map(function($sub) use($project) {
             $sub->token = Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
         });
         return response()->json([
