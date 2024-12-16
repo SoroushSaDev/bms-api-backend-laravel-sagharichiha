@@ -25,7 +25,7 @@ class SubProjectController extends Controller
             'name' => 'required|string',
             'description' => 'nullable|string',
             'files.*' => 'required|exists:files,id',
-            'forms.*' => 'required|exists:forms,id',
+            'forms.*' => 'required',
         ]);
         DB::beginTransaction();
         try {
