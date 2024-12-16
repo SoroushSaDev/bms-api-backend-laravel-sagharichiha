@@ -32,7 +32,7 @@ class SubProjectController extends Controller
             $targets = [];
             if ($project->type == 'ImageProcessing') {
                 foreach ($request['files'] as $i => $file) {
-                    foreach ($request['forms'][$i] as $j => $form) {
+                    foreach ($request['forms'][$file] as $j => $form) {
                         $targets[$file][$j] = $form;
                     }
                 }
