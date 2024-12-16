@@ -12,7 +12,10 @@ class AugmentedRealityController extends Controller
 {
     public function index()
     {
-        $ars = AugmentedReality::with('Images')->where('user_id', auth()->id())->get();
+        $ars = AugmentedReality::where('user_id', auth()->id())->get();
+        $ars->map(function($ar) {
+            $ar->images = $ar->Files->whereNotNull('use_type')->sortBy('use_type');
+        });
         return response()->json([
             'status' => 'success',
             'message' => 'Successfully fetched AR data',
