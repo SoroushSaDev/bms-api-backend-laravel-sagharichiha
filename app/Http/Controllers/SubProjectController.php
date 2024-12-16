@@ -6,12 +6,16 @@ use App\Models\Project;
 use App\Models\SubProject;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 
 class SubProjectController extends Controller
 {
     public function index(Project $project)
     {
         $subs = $project->SubProjects;
+        $subs->map(function($sub) {
+            $sub->token = Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
+        });
         return response()->json([
             'status' => 'success',
             'data' => $subs,
