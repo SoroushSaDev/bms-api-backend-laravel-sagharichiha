@@ -15,13 +15,11 @@ class DeviceController extends Controller
 {
     public function index(Request $request)
     {
-        $devices = Device::with(['User', 'Registers'])->get();
-        $devices->map(function ($device) {
-            $device->Translate();
-        });
+        $devices = Device::with(['User', 'Registers', 'Patterns'])->get();
         return response()->json([
             'status' => 'success',
             'data' => $devices,
+            'message' => 'Devices fetched successfully',
         ], 200);
     }
 
@@ -57,7 +55,6 @@ class DeviceController extends Controller
                 }
             }
             DB::commit();
-            $device->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $device,
@@ -67,17 +64,18 @@ class DeviceController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while storing device',
             ], 500);
         }
     }
 
     public function show(Device $device): JsonResponse
     {
-        $device->Translate();
         return response()->json([
             'status' => 'success',
-            'data' => $device,
+            'data' => [$device],
+            'message' => 'Device fetched successfully',
         ], 200);
     }
 
@@ -94,7 +92,6 @@ class DeviceController extends Controller
             $device->wifi = $request->has('type') ? $request['wifi'] : $device->wifi;
             $device->save();
             DB::commit();
-            $device->Translate();
             return response()->json([
                 'status' => 'success',
                 'data' => $device,
@@ -104,7 +101,8 @@ class DeviceController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while updating device',
             ], 500);
         }
     }
@@ -123,7 +121,8 @@ class DeviceController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while deleting device',
             ], 500);
         }
     }
@@ -133,7 +132,7 @@ class DeviceController extends Controller
         $registers = $device->Registers;
         return response()->json([
             'status' => 'success',
-            'message' => 'Device Registers Fetched Successfully',
+            'message' => 'Device registers fetched successfully',
             'data' => $registers,
         ], 200);
     }
@@ -144,6 +143,7 @@ class DeviceController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $connections,
+            'message' => 'Connections fetched successfully',
         ], 200);
     }
 }

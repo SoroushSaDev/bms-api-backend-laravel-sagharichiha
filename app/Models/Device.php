@@ -46,6 +46,11 @@ class Device extends Model
         return $this->belongsTo(self::class, 'parent_id', 'id');
     }
 
+    public function Patterns(): HasMany
+    {
+        return $this->hasMany(Pattern::class, 'device_id', 'id');
+    }
+
     public function SendToClient(): void
     {
         $response = Http::post(env('API_URL') . 'devices', [
