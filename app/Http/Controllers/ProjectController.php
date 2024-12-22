@@ -14,19 +14,15 @@ class ProjectController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $projects = Project::with(['User', 'City', 'Devices'])->select(['id', 'user_id', 'city_id', 'name', 'description', 'address'])
-            ->when(auth()->user()->type != 'admin', function ($query) {
+        $projects = Project::with(['User', 'City', 'Devices'])->when(auth()->user()->type != 'admin', function ($query) {
                 $query->where('user_id', auth()->id());
-            })
-            ->when($request->has('city'), function ($query) use ($request) {
+            })->when($request->has('city'), function ($query) use ($request) {
                 $query->where('city_id', $request['city']);
-            })->paginate(10);
-        $projects->map(function (Project $project) {
-            $project->Translate();
-        });
+            })->get();
         return response()->json([
             'status' => 'success',
             'data' => $projects,
+            'message' => 'Projects fetched successfully',
         ], 200);
     }
 
