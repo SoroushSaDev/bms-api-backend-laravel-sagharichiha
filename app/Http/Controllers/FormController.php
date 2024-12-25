@@ -10,7 +10,9 @@ class FormController extends Controller
 {
     public function index(Request $request)
     {
-        $forms = Form::with('Category')->where('user_id', auth()->id())->when($request->has('category'), function($query) use ($request) {
+        $forms = Form::with('Category')->when(auth()->user()->type != 'admin', function($query) {
+            $query->where('user_id', auth()->id());
+        })->when($request->has('category'), function($query) use ($request) {
             $query->where('category_id', $request['category']);
         })->get();
         return response()->json([
