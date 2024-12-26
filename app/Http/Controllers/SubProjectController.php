@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AccessToken;
 use App\Models\Project;
 use App\Models\SubProject;
+use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -14,7 +16,16 @@ class SubProjectController extends Controller
     {
         $subs = $project->SubProjects;
         $subs->map(function($sub) use($project) {
-            $sub->token = Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
+            $token = AccessToken::where('user_id', auth()->id())->where('tokenable_type', SubProject::class)->where('tokenable_id', $sub->id)
+                    ->whereNull('expired_at')->first();
+            if(!$token) {
+                $token = AccessToken::create([
+                    'user_id' => auth()->id(),
+                    'tokenable_type' => SubProject::class,
+                    'tokenable_id' => $sub->id,
+                ]);
+            }
+            $sub->token = $token->id . '|' . Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
         });
         return response()->json([
             'status' => 'success',
