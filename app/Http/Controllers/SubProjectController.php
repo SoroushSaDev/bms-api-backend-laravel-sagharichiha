@@ -19,13 +19,15 @@ class SubProjectController extends Controller
             $token = AccessToken::where('user_id', auth()->id())->where('tokenable_type', SubProject::class)->where('tokenable_id', $sub->id)
                     ->whereNull('expired_at')->first();
             if(!$token) {
+                $secret = Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
                 $token = AccessToken::create([
                     'user_id' => auth()->id(),
                     'tokenable_type' => SubProject::class,
                     'tokenable_id' => $sub->id,
+                    'token' => $secret,
                 ]);
             }
-            $sub->token = $token->id . '|' . Hash::make('SubAR' . $sub->id . 'Project' . $project->id . 'User' . auth()->id());
+            $sub->token = $token->id . '|' . $token->token;
         });
         return response()->json([
             'status' => 'success',
