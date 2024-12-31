@@ -64,6 +64,13 @@ class RegisterController extends Controller
 
     public function update(Register $register, RegisterRequest $request): JsonResponse
     {
+        if($request->has('value') && $request['value'] == $register->value) {
+            return response()->json([
+                'status' => 'error',
+                'data' => 'input value is the same as the current value',
+                'message' => 'Error while updating register',
+            ], 422);
+        }
         DB::beginTransaction();
         try {
             $register->title = $request['title'];
