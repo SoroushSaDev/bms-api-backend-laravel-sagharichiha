@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\RegisterEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Register;
@@ -81,6 +82,7 @@ class RegisterController extends Controller
             $register->save();
             DB::commit();
             // $register->Translate();
+            RegisterEvent::dispatch($register);
             return response()->json([
                 'status' => 'success',
                 'data' => $register,
