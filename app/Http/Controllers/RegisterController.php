@@ -9,6 +9,8 @@ use App\Models\Register;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Http;
 
 class RegisterController extends Controller
 {
@@ -81,8 +83,10 @@ class RegisterController extends Controller
             $register->value = $request->has('value') ? $request['value'] : $request->value;
             $register->save();
             DB::commit();
+            Http::post("https://bms.behinstart.ir/registers/{$register->id}/fire", [
+                'token' => Hash::make('Register-' . $register->id .'-Fire'),
+            ]);
             // $register->Translate();
-            RegisterEvent::dispatch($register);
             return response()->json([
                 'status' => 'success',
                 'data' => $register,
