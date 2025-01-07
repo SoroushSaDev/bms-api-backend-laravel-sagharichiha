@@ -16,4 +16,9 @@ class Template extends Model
     {
         return $this->hasMany(TemplateItem::class, 'template_id', 'id');
     }
+
+    public function GetTotal(): float|int
+    {
+        return $this->columns * $this->rows;
+    }
 }
