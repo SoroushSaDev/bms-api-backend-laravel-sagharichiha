@@ -69,7 +69,38 @@ class TemplateController extends Controller
 
     public function update(Template $template, TemplateRequest $request)
     {
-        dd($template);
+        DB::beginTransaction();
+        try {
+            $template->update([
+                'title' => $request['title'],
+                'columns' => $request['columns'],
+                'description' => $request['description'],
+                'rows' => $request['rows'],
+            ]);
+            foreach ($request['devices'] as $i => $device) {
+                if (!is_null($device)) {
+                    TemplateItem::create([
+                        'order' => $i,
+                        'template_id' => $template->id,
+                        'count' => $request['count'][$i],
+                        'registers' => json_encode($request['registers'][$i]),
+                    ]);
+                }
+            }
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'data' => $template,
+                'message' => 'Template updated successfully',
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollback();
+            return response()->json([
+                'status' => 'error',
+                'data' => $exception->getMessage(),
+                'message' => 'Error while updating template'
+            ], 500);
+        }
     }
 
     public function destroy(Template $template)
