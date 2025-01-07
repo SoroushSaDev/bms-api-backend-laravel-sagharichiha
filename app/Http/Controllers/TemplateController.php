@@ -32,13 +32,13 @@ class TemplateController extends Controller
                 'columns' => $request['columns'],
                 'rows' => $request['rows'],
             ]);
-            foreach ($request['devices'] as $i => $device) {
-                if (!is_null($device)) {
+            foreach ($request['charts'] as $i => $chart) {
+                if (!is_null($chart)) {
                     TemplateItem::create([
                         'order' => $i,
                         'template_id' => $template->id,
-                        'count' => $request['count'][$i],
-                        'registers' => json_encode($request['registers'][$i]),
+                        'count' => $chart['count'],
+                        'registers' => json_encode($chart['registers']),
                     ]);
                 }
             }
@@ -77,13 +77,14 @@ class TemplateController extends Controller
                 'description' => $request['description'],
                 'rows' => $request['rows'],
             ]);
-            foreach ($request['devices'] as $i => $device) {
-                if (!is_null($device)) {
+            $template->Items->each->delete();
+            foreach ($request['charts'] as $i => $chart) {
+                if (!is_null($chart)) {
                     TemplateItem::create([
                         'order' => $i,
                         'template_id' => $template->id,
-                        'count' => $request['count'][$i],
-                        'registers' => json_encode($request['registers'][$i]),
+                        'count' => $chart['count'],
+                        'registers' => json_encode($chart['registers']),
                     ]);
                 }
             }
