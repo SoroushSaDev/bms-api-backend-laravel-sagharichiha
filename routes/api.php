@@ -1,26 +1,27 @@
 <?php
 
 use App\Http\Controllers\AugmentedRealityController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
 use App\Http\Controllers\DeviceController;
+use App\Http\Controllers\FileController;
+use App\Http\Controllers\FormController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SubProjectController;
+use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyCodeController;
+use App\Http\Controllers\VirtualRealityController;
 use App\Http\Middleware\AdminMiddleware;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\FileController;
-use App\Http\Controllers\FormController;
-use App\Http\Controllers\SubProjectController;
-use App\Http\Controllers\VirtualRealityController;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 
-Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
+Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
     Route::post('/register', [AuthController::class, 'register']);
     Route::post('/login', [AuthController::class, 'login']);
     Route::middleware('auth:sanctum')->group(function () {
@@ -104,7 +105,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::delete('/{category:id}', [CategoryController::class, 'destroy']);
         });
         Route::prefix('/vr')->name('vr.')->group(function () {
-            Route::prefix('/data')->name('data.')->group(function() {
+            Route::prefix('/data')->name('data.')->group(function () {
                 Route::get('/', [VirtualRealityController::class, 'index']);
                 Route::post('/', [VirtualRealityController::class, 'store']);
                 Route::get('/{vr:id}', [VirtualRealityController::class, 'show']);
@@ -118,6 +119,11 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function() {
             Route::get('/{ar:id}', [AugmentedRealityController::class, 'show']);
             Route::patch('/{ar:id}', [AugmentedRealityController::class, 'update']);
             Route::delete('/{ar:id}', [AugmentedRealityController::class, 'destroy']);
+        });
+
+        Route::prefix('/templates')->group(function () {
+            Route::get('/', [TemplateController::class, 'index']);
+            Route::post('/', [TemplateController::class, 'store']);
         });
 
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
