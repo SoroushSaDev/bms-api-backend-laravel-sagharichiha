@@ -124,6 +124,9 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
         Route::prefix('/templates')->group(function () {
             Route::get('/', [TemplateController::class, 'index']);
             Route::post('/', [TemplateController::class, 'store']);
+            Route::get('/{template:id}', [TemplateController::class, 'show']);
+            Route::patch('/{template:id}', [TemplateController::class, 'update']);
+            Route::delete('/{template:id}', [TemplateController::class, 'destroy']);
         });
 
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);

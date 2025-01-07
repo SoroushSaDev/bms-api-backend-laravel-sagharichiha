@@ -63,7 +63,8 @@ class ProjectController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while storing project',
             ], 500);
         }
     }
@@ -74,6 +75,7 @@ class ProjectController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $project,
+            'message' => 'Project fetched successfully',
         ], 200);
     }
 
@@ -116,7 +118,8 @@ class ProjectController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while updating project',
             ], 500);
         }
     }
@@ -135,7 +138,8 @@ class ProjectController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage(),
+                'data' => $exception->getMessage(),
+                'message' => 'Error while deleting project',
             ], 500);
         }
     }

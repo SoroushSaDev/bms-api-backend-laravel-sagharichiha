@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\TemplateRequest;
 use App\Models\Template;
 use App\Models\TemplateItem;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class TemplateController extends Controller
@@ -55,6 +54,41 @@ class TemplateController extends Controller
                 'status' => 'error',
                 'data' => $exception->getMessage(),
                 'message' => 'Error while storing template'
+            ], 500);
+        }
+    }
+
+    public function show(Template $template)
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => $template,
+            'message' => 'Template fetched successfully',
+        ], 200);
+    }
+
+    public function update(Template $template, TemplateRequest $request)
+    {
+        dd($template);
+    }
+
+    public function destroy(Template $template)
+    {
+        DB::beginTransaction();
+        try {
+            $template->Items->each->delete();
+            $template->delete();
+            DB::commit();
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Template deleted successfully',
+            ], 200);
+        } catch (\Exception $exception) {
+            DB::rollBack();
+            return response()->json([
+                'status' => 'error',
+                'data' => $exception->getMessage(),
+                'message' => 'Error while deleting template',
             ], 500);
         }
     }
