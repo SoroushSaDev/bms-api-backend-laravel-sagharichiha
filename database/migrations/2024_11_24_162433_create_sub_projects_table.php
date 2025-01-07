@@ -10,9 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('sub_projects', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
+            $table->integer('project_id');
             $table->string('name');
+            $table->text('description')->nullable();
+            $table->json('targets')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('sub_projects');
     }
 };

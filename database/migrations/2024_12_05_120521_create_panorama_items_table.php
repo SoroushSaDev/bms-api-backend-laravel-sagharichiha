@@ -10,14 +10,17 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('verify_codes', function (Blueprint $table) {
+        Schema::create('panorama_items', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->enum('type', ['email', 'phone_number']);
-            $table->string('code');
-            $table->dateTime('expiration');
-            $table->dateTime('used_at')->nullable();
-            $table->dateTime('invoked_at')->nullable();
+            $table->integer('panorama_id');
+            $table->integer('form_id');
+            $table->string('title');
+            $table->integer('x');
+            $table->integer('y');
+            $table->integer('z')->nullable();
+            $table->integer('from')->nullable();
+            $table->integer('to')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +31,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('verify_codes');
+        Schema::dropIfExists('panorama_items');
     }
 };

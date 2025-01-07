@@ -21,8 +21,11 @@ return new class extends Migration {
             $table->string('unit')->nullable();
             $table->string('scale')->nullable();
             $table->enum('type', ['none', 'bool', 'int'])->default('none');
-            $table->integer('limit_from')->nullable();
-            $table->integer('limit_to')->nullable();
+            $table->enum('permission', ['ReadOnly', 'ReadWrite'])->default('ReadOnly');
+            $table->integer('pattern_id')->nullable();
+            $table->string('border_color')->nullable();
+            $table->string('background_color')->nullable();
+            $table->dateTime('connected_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

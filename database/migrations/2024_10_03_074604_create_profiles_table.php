@@ -19,6 +19,8 @@ return new class extends Migration {
             $table->date('birthday')->nullable();
             $table->text('address')->nullable();
             $table->string('language')->default('en');
+            $table->string('timezone')->default('Asia/Tehran');
+            $table->enum('calendar', ['Gregorian', 'Jalali', 'Hijri'])->default('Gregorian');
             $table->softDeletes();
             $table->timestamps();
         });

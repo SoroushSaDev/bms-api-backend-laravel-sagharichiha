@@ -10,14 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('verify_codes', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id');
-            $table->enum('type', ['email', 'phone_number']);
-            $table->string('code');
-            $table->dateTime('expiration');
-            $table->dateTime('used_at')->nullable();
-            $table->dateTime('invoked_at')->nullable();
+            $table->string('fileable_type');
+            $table->integer('fileable_id');
+            $table->string('path');
+            $table->string('extension');
+            $table->bigInteger('size')->nullable();
+            $table->string('use_type')->nullable();
+            $table->integer('category_id')->default(0);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -28,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('verify_codes');
+        Schema::dropIfExists('files');
     }
 };

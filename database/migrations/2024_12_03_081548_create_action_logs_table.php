@@ -10,12 +10,15 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('translations', function (Blueprint $table) {
+        Schema::create('action_logs', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->string('key');
-            $table->string('lang');
-            $table->string('value')->nullable();
+            $table->integer('action_loggable_id');
+            $table->string('action_loggable_type');
+            $table->string('field')->nullable();
+            $table->string('from')->nullable();
+            $table->string('to')->nullable();
+            $table->enum('action', ['created', 'updated', 'deleted'])->default('updated');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +29,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('translations');
+        Schema::dropIfExists('action_logs');
     }
 };

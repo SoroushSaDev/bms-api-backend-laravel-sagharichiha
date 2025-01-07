@@ -10,9 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('brokers', function (Blueprint $table) {
             $table->id();
+            $table->integer('user_id');
             $table->string('name');
+            $table->string('host');
+            $table->integer('port')->default(1883);
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('brokers');
     }
 };

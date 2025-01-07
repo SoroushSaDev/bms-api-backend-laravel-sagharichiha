@@ -10,9 +10,12 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('panoramas', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('user_id');
+            $table->integer('sub_project_id');
+            $table->enum('type', ['photo', 'video'])->default('photo');
+            $table->integer('duration')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +26,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('panoramas');
     }
 };

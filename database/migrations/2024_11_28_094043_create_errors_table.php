@@ -10,9 +10,13 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('errors', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->integer('user_id')->nullable();
+            $table->string('title');
+            $table->text('text');
+            $table->text('description')->nullable();
+            $table->enum('status', ['Pending', 'Approved', 'Disapproved'])->default('Pending');
             $table->softDeletes();
             $table->timestamps();
         });
@@ -23,6 +27,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('roles');
+        Schema::dropIfExists('errors');
     }
 };

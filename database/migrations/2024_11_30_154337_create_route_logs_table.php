@@ -10,12 +10,16 @@ return new class extends Migration {
      */
     public function up(): void
     {
-        Schema::create('translations', function (Blueprint $table) {
+        Schema::create('route_logs', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
-            $table->string('key');
-            $table->string('lang');
-            $table->string('value')->nullable();
+            $table->string('ip')->nullable();
+            $table->string('device')->nullable();
+            $table->string('os')->nullable();
+            $table->string('os_version')->nullable();
+            $table->string('browser')->nullable();
+            $table->string('browser_version')->nullable();
+            $table->string('url')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
@@ -26,6 +30,6 @@ return new class extends Migration {
      */
     public function down(): void
     {
-        Schema::dropIfExists('translations');
+        Schema::dropIfExists('route_logs');
     }
 };

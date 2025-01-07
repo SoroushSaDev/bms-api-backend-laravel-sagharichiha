@@ -13,8 +13,9 @@ return new class extends Migration {
         Schema::create('devices', function (Blueprint $table) {
             $table->id();
             $table->integer('user_id')->nullable();
+            $table->integer('connection_id')->nullable();
             $table->string('name');
-            $table->string('type')->nullable();
+            $table->string('board_id')->nullable();
             $table->string('brand')->nullable();
             $table->string('model')->nullable();
             $table->text('description')->nullable();
@@ -23,7 +24,7 @@ return new class extends Migration {
             $table->integer('parent_id')->default(0);
             $table->integer('project_id')->default(0);
             $table->string('mqtt_topic');
-            $table->string('server_id')->nullable();
+            $table->dateTime('connected_at')->nullable();
             $table->softDeletes();
             $table->timestamps();
         });
