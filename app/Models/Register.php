@@ -45,6 +45,15 @@ class Register extends Model
         return $this->hasMany(Register::class, 'parent_id', 'id');
     }
 
+    public function ChartLogs($limit = null)
+    {
+        $logs = Log::where('loggable_type', Register::class)->where('loggable_id', $this->id);
+        if (!is_null($limit)) {
+            $logs = $logs->limit($limit);
+        }
+        return $logs->get();
+    }
+
     public function Translate(): void
     {
         TranslateAll($this, ['unit', 'input', 'output']);

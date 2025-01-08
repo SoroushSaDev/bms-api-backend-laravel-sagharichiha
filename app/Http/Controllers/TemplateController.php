@@ -61,6 +61,12 @@ class TemplateController extends Controller
     public function show(Template $template)
     {
         $template->load('Items');
+        $template->Items->map(function($item) {
+            $item->registers = $item->GetRegisters();
+            $item->registers->map(function($register) use ($item) {
+                $register->logs = $register->ChartLogs($item->count)->pluck('value', 'created_at');
+            });
+        });
         return response()->json([
             'status' => 'success',
             'data' => $template,
