@@ -60,6 +60,7 @@ class TemplateController extends Controller
 
     public function show(Template $template)
     {
+        $template->load('Items');
         return response()->json([
             'status' => 'success',
             'data' => $template,
