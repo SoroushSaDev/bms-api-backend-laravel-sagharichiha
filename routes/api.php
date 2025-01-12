@@ -84,6 +84,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
             Route::get('/{register:id}', [RegisterController::class, 'show']);
             Route::patch('/{register:id}', [RegisterController::class, 'update']);
             Route::delete('/{register:id}', [RegisterController::class, 'destroy']);
+            Route::get('/{register:id}/logs', [RegisterController::class, 'logs']);
         });
         Route::prefix('/forms')->name('forms.')->group(function () {
             Route::get('/', [FormController::class, 'index']);

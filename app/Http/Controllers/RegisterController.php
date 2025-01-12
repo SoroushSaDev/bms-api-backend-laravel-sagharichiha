@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Events\RegisterEvent;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\RegisterRequest;
+use App\Models\Log;
 use App\Models\Register;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -67,7 +67,7 @@ class RegisterController extends Controller
 
     public function update(Register $register, RegisterRequest $request): JsonResponse
     {
-        if($request->has('value') && $request['value'] == $register->value) {
+        if ($request->has('value') && $request['value'] == $register->value) {
             return response()->json([
                 'status' => 'error',
                 'data' => 'input value is the same as the current value',
@@ -84,7 +84,7 @@ class RegisterController extends Controller
             $register->save();
             DB::commit();
             Http::post("https://bms.behinstart.ir/registers/{$register->id}/fire", [
-                'token' => Hash::make('Register-' . $register->id .'-Fire'),
+                'token' => Hash::make('Register-' . $register->id . '-Fire'),
             ]);
             // $register->Translate();
             return response()->json([
@@ -120,26 +120,26 @@ class RegisterController extends Controller
         }
     }
 
-    public function test()
+    public function logs(Register $register, Request $request)
     {
+        $from = $request->has('from') && !is_null($request['from']) ? $request['from'] : null;
+        $to = $request->has('to') && !is_null($request['to']) ? $request['to'] : null;
+        $range = !is_null($from) && !is_null($to) ? [$from, $to] : null;
         try {
-            $temp1 = Register::firstWhere('title', 'Temp 1');
-            $temp2 = Register::firstWhere('title', 'Temp 2');
-            $temp3 = Register::firstWhere('title', 'Temp 3');
+            $logs = Log::where('loggable_type', Register::class)->where('loggable_id', $register->id)
+                ->when(!is_null($range), function (Builder $query) use ($range) {
+                    $query->whereBetween('created_at', $range);
+                })->orderBy('created_at', 'DESC')->paginate(10);
             return response()->json([
                 'status' => 'success',
-                'message' => 'Successfully fetched test data',
-                'data' => [
-                    'temp1' => $temp1->value,
-                    // 'temp2' => $temp2->value,
-                    'temp3' => $temp3->value,
-                ],
+                'data' => $logs,
+                'message' => 'Logs fetched successfully',
             ], 200);
-        } catch(\Exception $e) {
+        } catch (\Exception $exception) {
             return response()->json([
                 'status' => 'error',
-                'message' => 'Error fetching test data',
-                'errors' => $e,
+                'data' => $exception->getMessage(),
+                'message' => 'Error while fetching logs',
             ], 500);
         }
     }
