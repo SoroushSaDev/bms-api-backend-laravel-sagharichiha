@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Requests\RegisterRequest;
 use App\Models\Log;
 use App\Models\Register;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -124,12 +123,18 @@ class RegisterController extends Controller
     {
         $from = $request->has('from') && !is_null($request['from']) ? $request['from'] : null;
         $to = $request->has('to') && !is_null($request['to']) ? $request['to'] : null;
-        $range = !is_null($from) && !is_null($to) ? [$from, $to] : null;
+//        $range = !is_null($from) && !is_null($to) ? [$from, $to] : null;
         try {
             $logs = Log::where('loggable_type', Register::class)->where('loggable_id', $register->id)
-                ->when(!is_null($range), function (Builder $query) use ($range) {
-                    $query->whereBetween('created_at', $range);
-                })->orderBy('created_at', 'DESC')->paginate(10);
+//                ->when(!is_null($range), function (Builder $query) use ($range) {
+//                    $query->whereBetween('created_at', $range);
+//                })
+                ->when(!is_null($from), function ($query) use ($from) {
+                    $query->whereDate('created_at', '>=', $from);
+                })->when(!is_null($to), function ($query) use ($to) {
+                    $query->whereDate('created_at', '<=', $to);
+                })
+                ->orderBy('created_at', 'DESC')->paginate(10);
             return response()->json([
                 'status' => 'success',
                 'data' => $logs,
