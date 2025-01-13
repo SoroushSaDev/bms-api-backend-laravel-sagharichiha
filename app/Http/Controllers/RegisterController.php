@@ -121,20 +121,26 @@ class RegisterController extends Controller
 
     public function logs(Register $register, Request $request)
     {
+        $request->validate([
+            'pagination' => 'boolean',
+            'from' => 'required',
+            'to' => 'required',
+        ]);
+        $pagination = $request->has('pagination') ? $request['pagination'] : true;
         $from = $request->has('from') && !is_null($request['from']) ? $request['from'] : null;
         $to = $request->has('to') && !is_null($request['to']) ? $request['to'] : null;
-//        $range = !is_null($from) && !is_null($to) ? [$from, $to] : null;
         try {
             $logs = Log::where('loggable_type', Register::class)->where('loggable_id', $register->id)
-//                ->when(!is_null($range), function (Builder $query) use ($range) {
-//                    $query->whereBetween('created_at', $range);
-//                })
                 ->when(!is_null($from), function ($query) use ($from) {
                     $query->whereDate('created_at', '>=', $from);
                 })->when(!is_null($to), function ($query) use ($to) {
                     $query->whereDate('created_at', '<=', $to);
-                })
-                ->orderBy('created_at', 'DESC')->paginate(10);
+                })->orderBy('created_at', 'DESC');
+                if($pagination) {
+                    $logs = $logs->paginate(10);
+                } else {
+                    $logs = $logs->get();
+                }
             return response()->json([
                 'status' => 'success',
                 'data' => $logs,
