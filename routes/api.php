@@ -16,6 +16,7 @@ use App\Http\Controllers\TemplateController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VerifyCodeController;
 use App\Http\Controllers\VirtualRealityController;
+use App\Http\Controllers\VoiceTraceController;
 use App\Http\Middleware\AdminMiddleware;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Http\Request;
@@ -121,13 +122,15 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
             Route::patch('/{ar:id}', [AugmentedRealityController::class, 'update']);
             Route::delete('/{ar:id}', [AugmentedRealityController::class, 'destroy']);
         });
-
         Route::prefix('/templates')->group(function () {
             Route::get('/', [TemplateController::class, 'index']);
             Route::post('/', [TemplateController::class, 'store']);
             Route::get('/{template:id}', [TemplateController::class, 'show']);
             Route::patch('/{template:id}', [TemplateController::class, 'update']);
             Route::delete('/{template:id}', [TemplateController::class, 'destroy']);
+        });
+        Route::prefix('/voice')->group(function() {
+            Route::post('/trace', [VoiceTraceController::class, 'trace']);
         });
 
         Route::get('/GetConnections', [DeviceController::class, 'GetConnections']);
