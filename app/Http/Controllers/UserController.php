@@ -18,7 +18,7 @@ class UserController extends Controller
     {
         $users = User::with('Profile')->when($request->has('parent_id'), function ($query) use ($request) {
             $query->where('parent_id', $request['parent_id']);
-        })->paginate(10);
+        })->get();
         return response()->json([
             'status' => 'success',
             'data' => $users
