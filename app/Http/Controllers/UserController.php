@@ -20,7 +20,7 @@ class UserController extends Controller
         $type = $user->type;
         $id = $user->id;
         $users = User::with('Profile')->where(function($query) use ($request, $type, $id) {
-            $query->when($type != 'admin', function($query) {
+            $query->when($type != 'admin', function($query) use($id) {
                 $query->where('parent_id', $id);
             })->when($request->has('parent_id'), function ($query) use ($request) {
                 $query->where('parent_id', $request['parent_id']);
