@@ -97,7 +97,9 @@ class UserController extends Controller
 
     public function update(User $user, Request $request): JsonResponse
     {
-        dd($request->all());
+        return response()->json([
+            'data' => $request->all()
+        ]);
         DB::beginTransaction();
         try {
             $request->validate([
