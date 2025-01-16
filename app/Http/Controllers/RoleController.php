@@ -11,7 +11,9 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::paginate(10);
+        $roles = Role::when(auth()->user()->type != 'admin', function($query) {
+            $query->where('user_id', auth()->id());
+        })->get();
         return response()->json([
             'status' => 'success',
             'data' => $roles,
@@ -27,6 +29,7 @@ class RoleController extends Controller
                 'permissions.*' => 'nullable|exists:permissions,id',
             ]);
             $role = Role::create([
+                'user_id' => auth()->id(),
                 'name' => $request['name'],
             ]);
             if ($request->has('permissions'))
