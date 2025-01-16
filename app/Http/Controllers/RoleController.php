@@ -11,7 +11,7 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::when(auth()->user()->type != 'admin', function($query) {
+        $roles = Role::with(['Permissions', 'Users'])->when(auth()->user()->type != 'admin', function($query) {
             $query->where('user_id', auth()->id());
         })->get();
         return response()->json([

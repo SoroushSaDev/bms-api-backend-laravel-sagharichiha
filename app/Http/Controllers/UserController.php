@@ -19,7 +19,7 @@ class UserController extends Controller
         $user = auth()->user();
         $type = $user->type;
         $id = $user->id;
-        $users = User::with('Profile')->where(function($query) use ($request, $type, $id) {
+        $users = User::with(['Profile', 'Roles'])->where(function($query) use ($request, $type, $id) {
             $query->when($type != 'admin', function($query) use($id) {
                 $query->where('parent_id', $id);
             })->when($request->has('parent_id'), function ($query) use ($request) {
@@ -48,6 +48,9 @@ class UserController extends Controller
                 'last_name' => 'nullable|max:255',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
+                'roles' => 'nullable|exists:roles,id',
+                'timezone' => ['required', Rule::in(timezone_identifiers_list())],
+                'calendar' => ['required', Rule::in(User::Calendars)],
             ]);
             $user = new User();
             $user->parent_id = $parentId;
@@ -64,6 +67,8 @@ class UserController extends Controller
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
             $profile->address = $request->has('address') ? $request['address'] : null;
             $profile->language = $request->has('language') ? $request['language'] : null;
+            $profile->calendar = $request->has('calendar') ? $request['calendar'] : $profile->calendar;
+            $profile->timezone = $request->has('timezone') ? $request['timezone'] : $profile->timezone;
             $profile->save();
             DB::commit();
             return response()->json([
@@ -82,6 +87,7 @@ class UserController extends Controller
 
     public function show(User $user): JsonResponse
     {
+        $user->load('Profile', 'Roles');
         $user->Profile->Translate();
         return response()->json([
             'status' => 'success',
@@ -103,6 +109,9 @@ class UserController extends Controller
                 'gender' => 'nullable|in:male,female',
                 'birthday' => 'nullable|date',
                 'address' => 'nullable',
+                'roles' => 'nullable|exists:roles,id',
+                'timezone' => ['required', Rule::in(timezone_identifiers_list())],
+                'calendar' => ['required', Rule::in(User::Calendars)],
             ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['name'];
@@ -124,6 +133,9 @@ class UserController extends Controller
             $profile->gender = $request->has('gender') ? $request['gender'] : $profile->gender;
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : $profile->birthday;
             $profile->address = $request->has('address') ? $request['address'] : $profile->address;
+            $profile->language = $request->has('language') ? $request['language'] : $profile->language;
+            $profile->calendar = $request->has('calendar') ? $request['calendar'] : $profile->calendar;
+            $profile->timezone = $request->has('timezone') ? $request['timezone'] : $profile->timezone;
             $profile->save();
             DB::commit();
             $user->Profile->Translate();

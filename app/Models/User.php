@@ -54,6 +54,12 @@ class User extends Authenticatable
         ];
     }
 
+    const Calendars = [
+        'Gregorian',
+        'Jalali',
+        'Hijri',
+    ];
+
     public function Profile(): HasOne
     {
         return $this->hasOne(Profile::class, 'user_id', 'id');
