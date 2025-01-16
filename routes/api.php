@@ -73,6 +73,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
                 Route::get('/{user:id}/roles', [UserController::class, 'roles']);
                 Route::post('/{user:id}/set', [UserController::class, 'set']);
             });
+            Route::get('/timezones', [UserController::class, 'timezones']);
         });
         Route::prefix('/verify')->name('verify.')->group(function () {
             Route::post('/send', [VerifyCodeController::class, 'send']);

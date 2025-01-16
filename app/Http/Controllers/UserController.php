@@ -239,4 +239,13 @@ class UserController extends Controller
             ], 500);
         }
     }
+
+    public function timezones()
+    {
+        return response()->json([
+            'status' => 'success',
+            'data' => timezone_identifiers_list(),
+            'message' => 'Timezones fetched successfully',
+        ], 200);
+    }
 }
