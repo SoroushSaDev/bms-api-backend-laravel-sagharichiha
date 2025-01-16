@@ -144,13 +144,14 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
                 Route::patch('/{permission:id}', [PermissionController::class, 'update']);
                 Route::delete('/{permission:id}', [PermissionController::class, 'destroy']);
             });
-            Route::prefix('/roles')->name('roles.')->group(function () {
-                Route::get('/', [RoleController::class, 'index']);
-                Route::post('/', [RoleController::class, 'store']);
-                Route::get('/{role:id}', [RoleController::class, 'show']);
-                Route::patch('/{role:id}', [RoleController::class, 'update']);
-                Route::delete('/{role:id}', [RoleController::class, 'destroy']);
-            });
+        });
+
+        Route::prefix('/roles')->name('roles.')->group(function () {
+            Route::get('/', [RoleController::class, 'index']);
+            Route::post('/', [RoleController::class, 'store']);
+            Route::get('/{role:id}', [RoleController::class, 'show']);
+            Route::patch('/{role:id}', [RoleController::class, 'update']);
+            Route::delete('/{role:id}', [RoleController::class, 'destroy']);
         });
     });
     Route::post('/vr/upload', [FileController::class, 'VR']);
