@@ -28,7 +28,8 @@ class UserController extends Controller
         })->orWhere('id', $id)->get();
         return response()->json([
             'status' => 'success',
-            'data' => $users
+            'data' => $users,
+            'message' => 'Users fetched successfully',
         ], 200);
     }
 
@@ -93,27 +94,28 @@ class UserController extends Controller
         return response()->json([
             'status' => 'success',
             'data' => $user,
+            'message' => 'User fetched successfully',
         ], 200);
     }
 
     public function update(User $user, Request $request): JsonResponse
     {
+        $request->validate([
+            'names' => 'required|max:255',
+            'password' => 'nullable|confirmed|min:6|max:32',
+            'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
+            'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
+            'first_name' => 'nullable|max:255',
+            'last_name' => 'nullable|max:255',
+            'gender' => 'nullable|in:male,female',
+            'birthday' => 'nullable|date',
+            'address' => 'nullable',
+            'roles' => 'nullable|exists:roles,id',
+            'timezone' => ['required', Rule::in(timezone_identifiers_list())],
+            'calendar' => ['required', Rule::in(User::Calendars)],
+        ]);
         DB::beginTransaction();
         try {
-            $request->validate([
-                'names' => 'required|max:255',
-                'password' => 'nullable|confirmed|min:6|max:32',
-                'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
-                'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
-                'first_name' => 'nullable|max:255',
-                'last_name' => 'nullable|max:255',
-                'gender' => 'nullable|in:male,female',
-                'birthday' => 'nullable|date',
-                'address' => 'nullable',
-                'roles' => 'nullable|exists:roles,id',
-                'timezone' => ['required', Rule::in(timezone_identifiers_list())],
-                'calendar' => ['required', Rule::in(User::Calendars)],
-            ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->name = $request['names'];
             if ($request->has('password'))
@@ -149,7 +151,8 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage()
+                'data' => $exception->getMessage(),
+                'message' => 'Error while updating user',
             ], 500);
         }
     }
@@ -169,7 +172,8 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage()
+                'data' => $exception->getMessage(),
+                'message' => 'User deleted successfully',
             ], 500);
         }
     }
