@@ -42,3 +42,19 @@ function CheckClass($type, $check, $checker): string
         default => '',
     };
 }
+
+function RequestHas($request, array|string|bool|int $search)
+{
+    if (is_array($search)) {
+        $result = true;
+        foreach($search as $key) {
+           if (!RequestHas($request, $key)){
+            $result = false;
+            break;
+           }
+        }
+        return $result;
+    } else {
+        return $request->has($search) && !is_null($request[$search]) && $request[$search] != '';
+    }
+}
