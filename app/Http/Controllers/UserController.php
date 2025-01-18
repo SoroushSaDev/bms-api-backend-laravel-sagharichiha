@@ -35,7 +35,6 @@ class UserController extends Controller
 
     public function store(Request $request): JsonResponse
     {
-        $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         $request->validate([
             'names' => 'required|max:255',
             'password' => 'required|confirmed|min:6|max:32',
@@ -54,6 +53,7 @@ class UserController extends Controller
             'timezone' => ['required', Rule::in(timezone_identifiers_list())],
             'calendar' => ['required', Rule::in(User::Calendars)],
         ]);
+        $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         DB::beginTransaction();
         try {
             $user = User::create([
@@ -105,7 +105,7 @@ class UserController extends Controller
     public function update(User $user, Request $request): JsonResponse
     {
         $request->validate([
-            'names' => 'required|max:255',
+            'name' => 'required|max:255',
             'password' => 'nullable|confirmed|min:6|max:32',
             'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
             'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
@@ -123,7 +123,7 @@ class UserController extends Controller
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->update([
                 'parent_id' => $parentId,
-                'name' => $request['names'],
+                'name' => $request['name'],
                 'password' => RequestHas($request, 'password') ? Hash::make($request['password']) : $user->password,
                 'phone_number' => RequestHas($request, 'phone_number') ? $request['phone_number'] : $user->phone_number,
                 'phone_number_verified_at' => RequestHas($request, 'phone_number') && $request['phone_number'] != $user->phone_number ? null : $user->phone_number_verified_at,
