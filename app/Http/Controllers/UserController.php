@@ -105,7 +105,7 @@ class UserController extends Controller
     public function update(User $user, Request $request): JsonResponse
     {
         $request->validate([
-            'name' => 'required|max:255',
+            'username' => 'required|max:255',
             'password' => 'nullable|confirmed|min:6|max:32',
             'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
             'email' => [
@@ -126,7 +126,7 @@ class UserController extends Controller
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
             $user->update([
                 'parent_id' => $parentId,
-                'name' => $request['name'],
+                'name' => $request['username'],
                 'password' => RequestHas($request, 'password') ? Hash::make($request['password']) : $user->password,
                 'phone_number' => RequestHas($request, 'phone_number') ? $request['phone_number'] : $user->phone_number,
                 'phone_number_verified_at' => RequestHas($request, 'phone_number') && $request['phone_number'] != $user->phone_number ? null : $user->phone_number_verified_at,
