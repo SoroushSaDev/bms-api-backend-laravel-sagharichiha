@@ -35,23 +35,23 @@ class UserController extends Controller
     public function store(Request $request): JsonResponse
     {
         $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
+        $request->validate([
+            'name' => 'required|max:255',
+            'password' => 'required|confirmed|min:6|max:32',
+            'phone_number' => [Rule::requiredIf(!$request->has('email')), 'unique:users,phone_number'],
+            'email' => [Rule::requiredIf(!$request->has('phone_number')), 'email', 'unique:users,email'],
+            'language' => ['nullable', Rule::in(array_keys(Translation::Languages))],
+            'gender' => 'nullable|in:male,female',
+            'first_name' => 'nullable|max:255',
+            'last_name' => 'nullable|max:255',
+            'birthday' => 'nullable|date',
+            'address' => 'nullable',
+            'roles' => 'nullable|exists:roles,id',
+            'timezone' => ['required', Rule::in(timezone_identifiers_list())],
+            'calendar' => ['required', Rule::in(User::Calendars)],
+        ]);
         DB::beginTransaction();
         try {
-            $request->validate([
-                'name' => 'required|max:255',
-                'password' => 'required|confirmed|min:6|max:32',
-                'phone_number' => [Rule::requiredIf(!$request->has('email')), 'unique:users,phone_number'],
-                'email' => [Rule::requiredIf(!$request->has('phone_number')), 'email', 'unique:users,email'],
-                'language' => ['nullable', Rule::in(array_keys(Translation::Languages))],
-                'gender' => 'nullable|in:male,female',
-                'first_name' => 'nullable|max:255',
-                'last_name' => 'nullable|max:255',
-                'birthday' => 'nullable|date',
-                'address' => 'nullable',
-                'roles' => 'nullable|exists:roles,id',
-                'timezone' => ['required', Rule::in(timezone_identifiers_list())],
-                'calendar' => ['required', Rule::in(User::Calendars)],
-            ]);
             $user = new User();
             $user->parent_id = $parentId;
             $user->name = $request['name'];
@@ -80,7 +80,8 @@ class UserController extends Controller
             DB::rollBack();
             return response()->json([
                 'status' => 'error',
-                'message' => $exception->getMessage()
+                'data' => $exception->getMessage(),
+                'message' => 'Error while creating user',
             ], 500);
         }
     }
