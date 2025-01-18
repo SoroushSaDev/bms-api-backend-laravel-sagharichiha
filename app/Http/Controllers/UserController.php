@@ -37,7 +37,7 @@ class UserController extends Controller
     {
         $parentId = $request->has('parent_id') ? $request['parent_id'] : (auth()->check() ? auth()->id() : 0);
         $request->validate([
-            'name' => 'required|max:255',
+            'names' => 'required|max:255',
             'password' => 'required|confirmed|min:6|max:32',
             'phone_number' => [
                 Rule::requiredIf(!$request->has('email')),
@@ -56,24 +56,25 @@ class UserController extends Controller
         ]);
         DB::beginTransaction();
         try {
-            $user = new User();
-            $user->parent_id = $parentId;
-            $user->name = $request['name'];
-            $user->email = $request->has('email') ? $request['email'] : null;
-            $user->password = Hash::make($request['password']);
-            $user->phone_number = $request->has('phone_number') ? $request['phone_number'] : null;
-            $user->save();
-            $profile = new Profile();
-            $profile->user_id = $user->id;
-            $profile->first_name = RequestHas($request, 'first_name') ? $request['first_name'] : null;
-            $profile->last_name = RequestHas($request, 'last_name') ? $request['last_name'] : null;
-            $profile->gender = RequestHas($request, 'gender') ? $request['gender'] : null;
-            $profile->birthday = RequestHas($request, 'birthday') ? $request['birthday'] : null;
-            $profile->address = RequestHas($request, 'address') ? $request['address'] : null;
-            $profile->language = RequestHas($request, 'language') ? $request['language'] : 'en';
-            $profile->calendar = RequestHas($request, 'calendar') ? $request['calendar'] : 'Gregorian';
-            $profile->timezone = RequestHas($request, 'timezone') ? $request['timezone'] : 'Asia/Tehran';
-            $profile->save();
+            $user = User::create([
+                'parent_id' => $parentId,
+                'name' => $request['names'],
+                'password' => Hash::make($request['password']),
+                'email' => $request->has('email') ? $request['email'] : null,
+                'phone_number' => $request->has('phone_number') ? $request['phone_number'] : null,
+            ]);
+            Profile::create([
+                'user_id' => $user->id,
+                'first_name' => RequestHas($request, 'first_name') ? $request['first_name'] : null,
+                'last_name' => RequestHas($request, 'last_name') ? $request['last_name'] : null,
+                'gender' => RequestHas($request, 'gender') ? $request['gender'] : null,
+                'birthday' => RequestHas($request, 'birthday') ? $request['birthday'] : null,
+                'address' => RequestHas($request, 'address') ? $request['address'] : null,
+                'language' => RequestHas($request, 'language') ? $request['language'] : 'en',
+                'calendar' => RequestHas($request, 'calendar') ? $request['calendar'] : 'Gregorian',
+                'timezone' => RequestHas($request, 'timezone') ? $request['timezone'] : 'Asia/Tehran',
+            ]);
+            $user->load('Profile');
             DB::commit();
             return response()->json([
                 'status' => 'success',
@@ -120,19 +121,15 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
-            $user->name = $request['names'];
-            if ($request->has('password'))
-                $user->password = Hash::make($request['password']);
-            if ($request->has('phone_number') && $request['phone_number'] != $user->phone_number) {
-                $user->phone_number = $request['phone_number'];
-                $user->phone_number_verified_at = null;
-            }
-            if ($request->has('email') && $request['email'] != $user->email) {
-                $user->email = $request['email'];
-                $user->email_verified_at = null;
-            }
-            $user->parent_id = $parentId;
-            $user->save();
+            $user->update([
+                'parent_id' => $parentId,
+                'name' => $request['names'],
+                'password' => RequestHas($request, 'password') ? Hash::make($request['password']) : $user->password,
+                'phone_number' => RequestHas($request, 'phone_number') ? $request['phone_number'] : $user->phone_number,
+                'phone_number_verified_at' => RequestHas($request, 'phone_number') && $request['phone_number'] != $user->phone_number ? null : $user->phone_number_verified_at,
+                'email' => RequestHas($request, 'email') ? $request['email'] : $user->email,
+                'email_verified_at' => RequestHas($request, 'email') && $request['email'] != $user->email ? null : $user->email_verified_at,
+            ]);
             $profile = $user->Profile;
             $profile->first_name = RequestHas($request, 'first_name') ? $request['first_name'] : $profile->first_name;
             $profile->last_name = RequestHas($request, 'last_name') ? $request['last_name'] : $profile->last_name;
