@@ -108,15 +108,18 @@ class UserController extends Controller
             'name' => 'required|max:255',
             'password' => 'nullable|confirmed|min:6|max:32',
             'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
-            'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
+            'email' => [
+                'email',
+                ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email'),
+            ],
             'first_name' => 'nullable|max:255',
             'last_name' => 'nullable|max:255',
             'gender' => 'nullable|in:male,female',
             'birthday' => 'nullable|date',
             'address' => 'nullable',
             'roles' => 'nullable|exists:roles,id',
-            'timezone' => ['required', Rule::in(timezone_identifiers_list())],
-            'calendar' => ['required', Rule::in(User::Calendars)],
+            'timezone' => ['nullable', Rule::in(timezone_identifiers_list())],
+            'calendar' => ['nullable', Rule::in(User::Calendars)],
         ]);
         DB::beginTransaction();
         try {
