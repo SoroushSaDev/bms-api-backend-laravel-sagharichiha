@@ -62,6 +62,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
             });
         });
         Route::prefix('/users')->name('users.')->group(function () {
+            Route::get('/languages', [UserController::class, 'languages']);
             Route::get('/timezones', [UserController::class, 'timezones']);
             Route::get('/', [UserController::class, 'index']);
             Route::post('/', [UserController::class, 'store']);

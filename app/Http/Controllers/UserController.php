@@ -100,7 +100,7 @@ class UserController extends Controller
         DB::beginTransaction();
         try {
             $request->validate([
-                'name' => 'required|max:255',
+                'names' => 'required|max:255',
                 'password' => 'nullable|confirmed|min:6|max:32',
                 'phone_number' => $request->has('phone_number') && $request['phone_number'] == $user->phone_number ? '' : 'unique:users,phone_number',
                 'email' => ['email', ($request->has('email') && $request['email'] == $user->email ? '' : 'unique:users,email')],
@@ -114,7 +114,7 @@ class UserController extends Controller
                 'calendar' => ['required', Rule::in(User::Calendars)],
             ]);
             $parentId = $request->has('parent_id') ? $request['parent_id'] : $user->parent_id;
-            $user->name = $request['name'];
+            $user->name = $request['names'];
             if ($request->has('password'))
                 $user->password = Hash::make($request['password']);
             if ($request->has('phone_number') && $request['phone_number'] != $user->phone_number) {
@@ -238,6 +238,21 @@ class UserController extends Controller
                 'message' => $exception->getMessage(),
             ], 500);
         }
+    }
+
+    public function languages()
+    {
+        $languages = [
+            'fa' => 'Persian',
+            'en' => 'English',
+            'ar' => 'Arabic',
+            'tr' => 'Turkish',
+        ];
+        return response()->json([
+            'status' => 'success',
+            'data' => $languages,
+            'message' => 'Languages fetched successfully',
+        ], 200);
     }
 
     public function timezones()
