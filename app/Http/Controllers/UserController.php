@@ -65,14 +65,14 @@ class UserController extends Controller
             $user->save();
             $profile = new Profile();
             $profile->user_id = $user->id;
-            $profile->first_name = $request->has('first_name') ? $request['first_name'] : null;
-            $profile->last_name = $request->has('last_name') ? $request['last_name'] : null;
-            $profile->gender = $request->has('gender') ? $request['gender'] : null;
-            $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
-            $profile->address = $request->has('address') ? $request['address'] : null;
-            $profile->language = $request->has('language') ? $request['language'] : 'en';
-            $profile->calendar = $request->has('calendar') ? $request['calendar'] : 'Gregorian';
-            $profile->timezone = $request->has('timezone') ? $request['timezone'] : 'Asia/Tehran';
+            $profile->first_name = $request->has('first_name') && !is_null($request['first_name']) && $request['first_name'] != '' ? $request['first_name'] : null;
+            $profile->last_name = $request->has('last_name') && !is_null($request['last_name']) && $request['last_name'] != '' ? $request['last_name'] : null;
+            $profile->gender = $request->has('gender') && !is_null($request['gender']) && $request['gender'] != '' ? $request['gender'] : null;
+            $profile->birthday = $request->has('birthday') && !is_null($request['birthday']) && $request['birthday'] != '' ? $request['birthday'] : null;
+            $profile->address = $request->has('address') && !is_null($request['address']) && $request['address'] != '' ? $request['address'] : null;
+            $profile->language = $request->has('language') && !is_null($request['language']) && $request['language'] != '' ? $request['language'] : 'en';
+            $profile->calendar = $request->has('calendar') && !is_null($request['calendar']) && $request['calendar'] != '' ? $request['calendar'] : 'Gregorian';
+            $profile->timezone = $request->has('timezone') && !is_null($request['timezone']) && $request['timezone'] != '' ? $request['timezone'] : 'Asia/Tehran';
             $profile->save();
             DB::commit();
             return response()->json([
