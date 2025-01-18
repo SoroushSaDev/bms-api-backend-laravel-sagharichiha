@@ -71,8 +71,8 @@ class UserController extends Controller
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
             $profile->address = $request->has('address') ? $request['address'] : null;
             $profile->language = $request->has('language') ? $request['language'] : 'en';
-            $profile->calendar = $request->has('calendar') ? $request['calendar'] : $profile->calendar;
-            $profile->timezone = $request->has('timezone') ? $request['timezone'] : $profile->timezone;
+            $profile->calendar = $request->has('calendar') ? $request['calendar'] : 'Gregorian';
+            $profile->timezone = $request->has('timezone') ? $request['timezone'] : 'Asia/Tehran';
             $profile->save();
             DB::commit();
             return response()->json([
