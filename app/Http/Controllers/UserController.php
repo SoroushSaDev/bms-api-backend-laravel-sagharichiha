@@ -39,7 +39,10 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|max:255',
             'password' => 'required|confirmed|min:6|max:32',
-            'phone_number' => [Rule::requiredIf(!$request->has('email')), 'unique:users,phone_number'],
+            'phone_number' => [
+                Rule::requiredIf(!$request->has('email')),
+                ($request->has('phone_number') && !is_null($request['phone_number']) ? 'unique:users,phone_number' : ''),
+            ],
             'email' => [Rule::requiredIf(!$request->has('phone_number')), 'email', 'unique:users,email'],
             'language' => ['nullable', Rule::in(array_keys(Translation::Languages))],
             'gender' => 'nullable|in:male,female',
@@ -67,7 +70,7 @@ class UserController extends Controller
             $profile->gender = $request->has('gender') ? $request['gender'] : null;
             $profile->birthday = $request->has('birthday') ? $request['birthday'] : null;
             $profile->address = $request->has('address') ? $request['address'] : null;
-            $profile->language = $request->has('language') ? $request['language'] : null;
+            $profile->language = $request->has('language') ? $request['language'] : 'en';
             $profile->calendar = $request->has('calendar') ? $request['calendar'] : $profile->calendar;
             $profile->timezone = $request->has('timezone') ? $request['timezone'] : $profile->timezone;
             $profile->save();
