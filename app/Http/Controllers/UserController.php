@@ -131,15 +131,16 @@ class UserController extends Controller
                 'email_verified_at' => RequestHas($request, 'email') && $request['email'] != $user->email ? null : $user->email_verified_at,
             ]);
             $profile = $user->Profile;
-            $profile->first_name = RequestHas($request, 'first_name') ? $request['first_name'] : $profile->first_name;
-            $profile->last_name = RequestHas($request, 'last_name') ? $request['last_name'] : $profile->last_name;
-            $profile->gender = RequestHas($request, 'gender') ? $request['gender'] : $profile->gender;
-            $profile->birthday = RequestHas($request, 'birthday') ? $request['birthday'] : $profile->birthday;
-            $profile->address = RequestHas($request, 'address') ? $request['address'] : $profile->address;
-            $profile->language = RequestHas($request, 'language') ? $request['language'] : $profile->language;
-            $profile->calendar = RequestHas($request, 'calendar') ? $request['calendar'] : $profile->calendar;
-            $profile->timezone = RequestHas($request, 'timezone') ? $request['timezone'] : $profile->timezone;
-            $profile->save();
+            $profile->update([
+                'first_name' => RequestHas($request, 'first_name') ? $request['first_name'] : $profile->first_name,
+                'last_name' => RequestHas($request, 'last_name') ? $request['last_name'] : $profile->last_name,
+                'gender' => RequestHas($request, 'gender') ? $request['gender'] : $profile->gender,
+                'birthday' => RequestHas($request, 'birthday') ? $request['birthday'] : $profile->birthday,
+                'address' => RequestHas($request, 'address') ? $request['address'] : $profile->address,
+                'language' => RequestHas($request, 'language') ? $request['language'] : $profile->language,
+                'calendar' => RequestHas($request, 'calendar') ? $request['calendar'] : $profile->calendar,
+                'timezone' => RequestHas($request, 'timezone') ? $request['timezone'] : $profile->timezone,
+            ]);
             DB::commit();
             $user->Profile->Translate();
             return response()->json([
