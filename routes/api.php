@@ -4,6 +4,7 @@ use App\Http\Controllers\AugmentedRealityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\CityController;
+use App\Http\Controllers\ComponentController;
 use App\Http\Controllers\DeviceController;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\FormController;
@@ -89,6 +90,13 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
             Route::delete('/{register:id}', [RegisterController::class, 'destroy']);
             Route::post('/{register:id}/logs', [RegisterController::class, 'logs']);
         });
+        Route::prefix('/components')->name('components.')->group(function () {
+            Route::get('/', [ComponentController::class, 'index']);
+            Route::post('/', [ComponentController::class, 'store']);
+            Route::get('/{component:id}', [ComponentController::class, 'show']);
+            Route::patch('/{component:id}', [ComponentController::class, 'update']);
+            Route::delete('/{component:id}', [ComponentController::class, 'destroy']);
+        });
         Route::prefix('/forms')->name('forms.')->group(function () {
             Route::get('/', [FormController::class, 'index']);
             Route::post('/', [FormController::class, 'store']);
@@ -131,7 +139,7 @@ Route::withoutMiddleware([VerifyCsrfToken::class])->group(function () {
             Route::patch('/{template:id}', [TemplateController::class, 'update']);
             Route::delete('/{template:id}', [TemplateController::class, 'destroy']);
         });
-        Route::prefix('/voice')->group(function() {
+        Route::prefix('/voice')->group(function () {
             Route::post('/trace', [VoiceTraceController::class, 'trace']);
         });
 
