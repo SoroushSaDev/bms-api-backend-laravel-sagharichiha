@@ -66,7 +66,7 @@ class FormController extends Controller
             $form->update([
                 'name' => $request->has('name') ? $request['name'] : $form->name,
                 'content' => $request['content'],
-                'objects' => $request->has('objects') ? $request['objects'] : $form->object,
+                'objects' => $request->has('objects') ? $request['objects'] : $form->objects,
                 'category_id' => $request->has('category') ? $request['category'] : $form->category_id,
             ]);
             DB::commit();
