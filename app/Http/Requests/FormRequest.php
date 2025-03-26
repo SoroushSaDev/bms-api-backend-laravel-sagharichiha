@@ -23,9 +23,9 @@ class FormRequest extends FRequest
     public function rules(): array
     {
         return [
-            'content' => [(request()->method() == 'post' ? 'nullable' : 'required'), 'string'],
-            'name' => [(request()->method() == 'post' ? 'required' : 'nullable'), 'string'],
-            'objects' => request()->method() == 'post' ? 'required' : 'nullable',
+            'name' => request()->method() == 'patch' ? 'nullable' : 'required|string',
+            'content' => request()->method() == 'patch' ? 'required|string' : 'nullable',
+            'objects' => request()->method() == 'patch' ? 'nullable' : 'required|string',
         ];
     }
 }
