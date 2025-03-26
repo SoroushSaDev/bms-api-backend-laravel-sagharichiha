@@ -65,7 +65,7 @@ class FormController extends Controller
         try {
             $form->update([
                 'name' => $request->has('name') ? $request['name'] : $form->name,
-                'content' => $request->has('content') ? $request['content'] : $form->content,
+                'content' => $request['content'],
                 'objects' => $request->has('objects') ? $request['objects'] : $form->objects,
                 'category_id' => $request->has('category') ? $request['category'] : $form->category_id,
             ]);
