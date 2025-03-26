@@ -30,8 +30,8 @@ class FormController extends Controller
             $form = Form::create([
                 'user_id' => auth()->id(),
                 'name' => $request['name'],
-                'content' => $request['content'],
-                'objects' => $request['objects'],
+                'content' => $request->has('content') ? $request['content'] : null,
+                'objects' => $request->has('object') ? $request['objects'] : null,
                 'category_id' => $request->has('category') ? $request['category'] : 0,
             ]);
             DB::commit();
@@ -64,9 +64,9 @@ class FormController extends Controller
         DB::beginTransaction();
         try {
             $form->update([
-                'name' => $request['name'],
+                'name' => $request->has('name') ? $request['name'] : $form->name,
                 'content' => $request['content'],
-                'objects' => $request['objects'],
+                'objects' => $request->has('object') ? $request['objects'] : $form->object,
                 'category_id' => $request->has('category') ? $request['category'] : $form->category_id,
             ]);
             DB::commit();
